@@ -1,0 +1,403 @@
+/* Reset básico: Restablece los márgenes y el padding para todos los elementos y ajusta el modelo de caja para evitar problemas de espaciado. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos básicos para el cuerpo de la página */
+body {
+    font-family: 'Oswald', sans-serif;  /* Establece la fuente para todo el texto */
+    line-height: 1.6;  /* Ajusta la altura de la línea para mejorar la legibilidad */
+    color: #333;  /* Color del texto */
+    overflow-x: hidden;  /* Evita el desbordamiento horizontal */
+    background-color: #f8f9fa;  /* Establece un fondo gris claro */
+}
+
+/* Estilo para el logo */
+.logo {
+    width: 150px;  /* Ajusta el tamaño del logo */
+    height: auto;  /* Mantiene la proporción de la imagen */
+    position: absolute;  /* Posiciona el logo de forma absoluta */
+    top: 10px;  /* Lo mueve hacia la parte superior */
+    right: 20px;  /* Lo mueve hacia la parte derecha */
+}
+
+/* Estilo para un segundo logo (logo_2) */
+.logo_2 {
+    width: 460px;  /* Ajusta el tamaño */
+    height: auto;  /* Mantiene la proporción */
+    position: absolute;  /* Posiciona la imagen de manera absoluta */
+    top: 42px;  /* Lo ajusta hacia abajo */
+    left: 34px;  /* Lo mueve hacia la izquierda */
+}
+
+/* Estilo para un enlace que se estira */
+.stretched-link {
+    width: 30rem;    /* Establece un ancho específico */
+    height: 0px;     /* Sin altura inicial */
+    max-height: 500px; /* Altura máxima permitida */
+}
+
+/* Estilo para la sección hero, que tiene una imagen de fondo con un gradiente y se usa típicamente para captar atención */
+.hero {
+    position: relative;  /* Necesario para posicionar correctamente elementos hijos */
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url("imagenes/myr72/Fondo 72.png") no-repeat center center/cover;  /* Fondo con gradiente y una imagen */
+    height: 145vh;  /* Hace que la altura sea un 45% más grande que la altura del viewport */
+    display: flex;  /* Se usa para crear un contenedor flexible */
+    align-items: center;  /* Centra los elementos verticalmente */
+    justify-content: center;  /* Centra los elementos horizontalmente */
+    text-align: center;  /* Alinea el texto al centro */
+    color: white;  /* Color del texto */
+}
+
+/* Línea separadora negra */
+.separator {
+    border: none;  /* Elimina el borde por defecto */
+    height: 7px;  /* Altura de la línea */
+    background-color: #000;  /* Color de la línea */
+    margin: 0;  /* Elimina el margen */
+}
+
+/* Estilos para la barra de navegación */
+.navbar {
+    background: #ff6a00 !important;  /* Color de fondo naranja */
+}
+
+.navbar-nav .nav-link {
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: #FFA500;
+    transform: scale(1.1); /* Hace un pequeño zoom */
+}
+.navbar-brand {
+    color: white;  /* Color blanco para el nombre de la marca */
+}
+
+/* Estilo de texto en la sección hero */
+.hero-text h1 {
+    font-size: 3rem;  /* Tamaño de fuente grande para el título */
+    font-weight: bold;  /* Negrita para el título */
+}
+
+.hero-text p {
+    font-size: 1.2rem;  /* Tamaño de fuente un poco más pequeño para el párrafo */
+    margin-bottom: 20px;  /* Espacio debajo del párrafo */
+}
+
+/* Botones de clase btn-primary y btn-warning */
+.btn-primary {
+    background-color: #ff6a00;  /* Fondo naranja */
+    border: none;  /* Elimina el borde */
+    padding: 10px 20px;  /* Espaciado interno */
+    font-size: 1.1rem;  /* Tamaño de fuente */
+    transition: background 0.3s ease;  /* Transición suave para el cambio de fondo */
+}
+
+.btn-warning {
+    background-color: #ff6a00;  /* Fondo naranja */
+    color: white;  /* Color de texto blanco */
+}
+
+.btn-primary:hover {
+    background-color: #e55b00;  /* Cambia el color de fondo al pasar el cursor */
+}
+
+/* Sección de proyectos */
+.proyectos {
+    padding: 50px 0;  /* Espaciado arriba y abajo */
+}
+
+.proyecto-container {
+    display: flex;  /* Usando flexbox para alinear los proyectos */
+    flex-wrap: wrap;  /* Permite que los proyectos se envuelvan a la siguiente línea */
+    justify-content: center;  /* Centra los proyectos horizontalmente */
+    gap: 20px;  /* Espacio entre los proyectos */
+}
+
+/* Estilo individual para cada proyecto */
+.proyecto {
+    max-width: 300px;  /* Ancho máximo del proyecto */
+    text-align: center;  /* Centra el texto dentro del proyecto */
+    background-color: #fff;  /* Fondo blanco */
+    border-radius: 8px;  /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
+    overflow: hidden;  /* Oculta cualquier contenido que sobresalga */
+    transition: transform 0.3s ease;  /* Transición para el movimiento */
+}
+
+.proyecto:hover {
+    transform: translateY(-10px);  /* Eleva el proyecto al pasar el cursor */
+}
+
+.proyecto img {
+    width: 100%;  /* Hace que la imagen ocupe todo el ancho */
+    border-bottom: 2px solid #ff6a00;  /* Añade una línea naranja debajo de la imagen */
+}
+
+/* Sección de contacto */
+.contacto {
+    padding: 50px 0;  /* Espaciado arriba y abajo */
+    background: #fff;  /* Fondo blanco */
+}
+
+/* Estilo para las imágenes de los productos o proyectos */
+.card-img-top {
+    width: 100%;  /* Hace que la imagen se ajuste al ancho del contenedor */
+    height: 300px;  /* Altura de la imagen */
+    object-fit: cover;  /* Recorta la imagen para ajustarla sin deformarla */
+    border-top-left-radius: 10px;  /* Bordes redondeados en la parte superior izquierda */
+    border-top-right-radius: 10px;  /* Bordes redondeados en la parte superior derecha */
+}
+
+/* Estilo para el formulario de inicio de sesión */
+.index {
+    max-width: 600px;  /* Limita el ancho máximo del formulario */
+    margin: auto;  /* Centra el formulario en la página */
+    background: #f9f9f9;  /* Fondo gris claro */
+    padding: 20px;  /* Espaciado interno */
+    border-radius: 8px;  /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
+}
+
+/* Estilos para los campos de formulario */
+.form-group input, 
+.form-group select {
+    width: 100%;  /* Ancho completo */
+    padding: 10px;  /* Espaciado interno */
+    font-size: 1rem;  /* Tamaño de fuente */
+    border: 1px solid #ccc;  /* Borde gris claro */
+    border-radius: 5px;  /* Bordes redondeados */
+}
+
+/* Estilo para el botón de envío */
+.btn-submit {
+    width: 100%;  /* Hace que el botón ocupe todo el ancho */
+    padding: 10px;  /* Espaciado interno */
+    background-color: #ff6a00;  /* Fondo naranja */
+    color: white;  /* Color de texto blanco */
+    border: none;  /* Elimina el borde */
+    border-radius: 5px;  /* Bordes redondeados */
+    transition: background 0.3s ease;  /* Transición para el cambio de fondo */
+}
+
+.btn-submit:hover {
+    background-color: #e55b00;  /* Cambia el color de fondo al pasar el cursor */
+}
+
+/* Estilo de tarjeta con transición */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;  /* Transición suave para el tamaño y sombra */
+}
+
+.card:hover {
+    transform: scale(1.1);  /* Aumenta el tamaño de la tarjeta al pasar el mouse */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);  /* Sombra más prominente */
+}
+
+/* Sección de contacto específica */
+#contacto {
+    position: relative;
+    padding: 40px 0;  /* Espaciado arriba y abajo */
+}
+
+/* Contenedor del carrusel */
+.carrusel-container {
+    position: absolute;  /* Posiciona de forma absoluta dentro de su contenedor */
+    left: 650px;  /* Ajusta la ubicación */
+    bottom: 0;  /* Ajuste vertical */
+    width: 700px;  /* Ancho del carrusel */
+    height: 545px;  /* Altura del carrusel */
+    perspective: 800px;  /* Añade profundidad 3D */
+    overflow: hidden;  /* Oculta lo que sobresale */
+}
+
+/* Estilos del carrusel */
+#carouselProyectos {
+    width: 100%;  /* Ocupa todo el ancho disponible */
+    height: 88%;  /* Ocupa un 88% de la altura del contenedor */
+}
+
+.carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;  /* Mantiene la perspectiva 3D */
+}
+
+/* Estilo de los elementos del carrusel */
+.carousel-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;  /* Inicialmente invisible */
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;  /* Transiciones suaves */
+    backface-visibility: hidden;  /* Oculta la parte trasera */
+}
+
+/* Estilo para el carrusel cuando el ítem está activo */
+.carousel-item.active {
+    opacity: 1;  /* Lo hace visible */
+    transform: rotateY(0deg);  /* Lo pone en su posición original */
+}
+
+/* Estilo para el ítem siguiente y anterior */
+.carousel-item-next {
+    transform: rotateY(90deg);  /* Rota hacia el siguiente */
+}
+
+.carousel-item-prev {
+    transform: rotateY(-90deg);  /* Rota hacia el anterior */
+}
+
+/* Estilo de un borde de advertencia dorado */
+.border_warning {
+    border: 10px solid #ff6a00;  /* Borde dorado */
+    border-radius: 10px;  /* Bordes redondeados */
+    border-width: 50px !important;  /* Borde más grueso */
+}
+
+/* Estilos para el modal de inicio de sesión */
+#loginModal {
+    display: none;  /* Oculto por defecto */
+    position: fixed;  /* Fijo en la pantalla */
+    top: 42%;  /* Centrado vertical */
+    left: 89%;  /* Centrado horizontal */
+    transform: translate(-50%, -50%);  /* Ajuste preciso para centrarlo */
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);  /* Sombra */
+    z-index: 9999;  /* Por encima de otros elementos */
+    width: 320px;
+    border-radius: 8px;  /* Bordes redondeados */
+}
+
+/* Estilos para los elementos dentro del modal de inicio de sesión */
+#loginModal label {
+    display: block;  /* Hacer que los labels se ubiquen en su propia línea */
+    text-align: left;  /* Alinea el texto a la izquierda */
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Estilos para los campos de entrada del modal */
+#loginModal input {
+    width: 90%;  /* Ajusta el ancho */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;  /* Centra los inputs */
+}
+
+/* Estilos para el botón de envío del modal */
+#loginModal button {
+    background-color: #ff6600;  /* Fondo naranja */
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Efecto hover del botón del modal */
+#loginModal button:hover {
+    background-color: #cc5500;  /* Color más oscuro */
+}
+
+/* Estilo para la superposición del modal */
+#modalOverlay {
+    display: none;  /* Oculto por defecto */
+    position: fixed;  /* Fijo en la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);  /* Fondo oscuro semitransparente */
+    z-index: 9999;
+}
+
+/* Estilos para el contenido del modal */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 300px;
+}
+
+/* Estilo para el botón de cierre del modal */
+.close-button {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Estilo del botón de inicio de sesión */
+.loginButton {
+    background-color: #ff6600;  /* Fondo naranja */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+/* Efecto hover del botón de inicio de sesión */
+.loginButton:hover {
+    background-color: #cc5500;  /* Oscurece el color al pasar el mouse */
+}
+
+
+.user-container {
+    position: relative;
+    display: inline-block;
+    color:#f8f9fa
+}
+
+.user-dropdown {
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #ff6600;
+}
+
+.user-dropdown:hover {
+    background-color: #FFA500;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #FFA500; /* Fondo oscuro */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    min-width: 150px;
+    z-index: 9999; /* Se mantiene siempre por encima de otros elementos */
+    top: 120%;  /* Movido más abajo */
+    right: -30px; /* Movido un poco a la derecha */
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white; /* Texto en blanco */
+    background-color: #ff6600; /* Fondo oscuro */
+    
+}
+
+.dropdown-content a:hover {
+    background-color:  #FFA500; /* Un poco más claro al pasar el mouse */
+}

@@ -1,0 +1,137 @@
+/* ====== ESTILOS GENERALES ====== */
+body {
+    display: flex; /* Centra el contenido horizontal y verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    background-color: #1e1e1e; /* Fondo oscuro */
+    margin: 0; /* Elimina los márgenes predeterminados */
+    font-family: Arial, sans-serif; /* Fuente principal */
+}
+
+.formulario {
+    overflow: auto; /* Mantiene el scroll */
+    scrollbar-width: none; /* Oculta la barra en Firefox */
+    -ms-overflow-style: none; /* Oculta la barra en Internet Explorer y Edge */
+}
+
+.formulario::-webkit-scrollbar {
+    width: 0px; /* Hace la barra de desplazamiento invisible */
+    height: 0px; /* Hace la barra de desplazamiento invisible */
+} 
+
+/* ====== CONTENEDOR PRINCIPAL DEL FORMULARIO ====== */
+.registro-container {
+    background: #2b2b2b; /* Fondo gris oscuro */
+    padding: 30px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    text-align: center; /* Texto centrado */
+    width: 300px; /* Ancho fijo */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para efecto de elevación */
+}
+
+/* ====== TÍTULO ====== */
+h1 {
+    color: white; /* Color del texto */
+    margin-bottom: 20px; /* Espaciado inferior */
+    border-bottom: 2px solid #00c853; /* Línea verde debajo del título */
+    display: inline-block; /* Para ajustar el ancho al contenido */
+    padding-bottom: 5px; /* Espaciado debajo del título */
+}
+
+/* ====== CAMPOS DE ENTRADA ====== */
+.input-container {
+    display: flex; /* Usa flexbox para organizar el contenido */
+    align-items: center; /* Alinea verticalmente los elementos */
+    background: #3a3a3a; /* Fondo gris oscuro */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espaciado entre los campos */
+}
+
+/* Ícono dentro del campo de entrada */
+.input-container .icon {
+    margin-right: 10px; /* Espaciado entre el ícono y el input */
+    color: #00c853; /* Color verde */
+}
+
+/* Estilos del input */
+.input-container input {
+    background: none; /* Fondo transparente */
+    border: none; /* Sin bordes */
+    outline: none; /* Elimina el borde azul al hacer clic */
+    color: white; /* Texto en color blanco */
+    width: 100%; /* Ocupar todo el espacio disponible */
+}
+
+/* ====== ENLACE "OLVIDÓ SU CONTRASEÑA" ====== */
+.forgot-password {
+    font-size: 12px; /* Tamaño de fuente pequeño */
+    color: white; /* Texto en blanco */
+}
+
+/* Estilo del enlace */
+.forgot-password a {
+    color: #00c853; /* Verde */
+    text-decoration: none; /* Sin subrayado */
+}
+
+/* ====== BOTONES ====== */
+.btn {
+    width: 100px; /* Ancho fijo */
+    padding: 10px; /* Espaciado interno */
+    border: none; /* Sin bordes */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor tipo botón */
+    margin: 5px; /* Espaciado entre botones */
+    font-weight: bold; /* Texto en negrita */
+}
+
+/* Botón de Registro */
+.registro {
+    background: #00c853; /* Fondo verde */
+    color: white; /* Texto en blanco */
+}
+
+/* Botón de Login */
+.login {
+    background: white; /* Fondo blanco */
+    color: black; /* Texto negro */
+}
+
+/* ====== MENSAJE DE REGISTRO EXITOSO ====== */
+#success-message {
+    position: absolute; /* Se posiciona sobre el contenido */
+    background: rgba(0, 0, 0, 0.8); /* Fondo negro con opacidad */
+    color: white; /* Texto en blanco */
+    padding: 40px; /* Aumentar el tamaño del cuadro */
+    width: 350px;  /* Hacer el cuadro más ancho */
+    border-radius: 10px; /* Bordes redondeados */
+    text-align: center; /* Texto centrado */
+    top: 50%; /* Centrado verticalmente */
+    left: 50%; /* Centrado horizontalmente */
+    transform: translate(-50%, -50%); /* Asegura el centrado absoluto */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para efecto de elevación */
+}
+
+/* Estilo del texto dentro del mensaje de éxito */
+#success-message p {
+    font-size: 22px; /* Tamaño del texto aumentado */
+}
+
+/* Botón dentro del mensaje de éxito */
+#success-message button {
+    background: #00c853; /* Fondo verde */
+    color: white; /* Texto en blanco */
+    border: none; /* Sin bordes */
+    padding: 12px 25px; /* Hacer el botón más grande */
+    margin-top: 15px; /* Espaciado superior */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño del texto */
+    cursor: pointer; /* Cursor tipo botón */
+}
+
+/* ====== CLASE PARA OCULTAR ELEMENTOS ====== */
+.hidden {
+    display: none; /* Elementos ocultos por defecto */
+}

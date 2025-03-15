@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es"> 
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Formulario en Tarjeta</title> 
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light"> 
+    <div class="card shadow-lg contenedor-formulario" style="width: 30rem; max-height: 500px; position: absolute; top: 0px; left: 100px; height: auto; min-height: 750px;">
+        <div class="card shadow-lg border border-warning border-5" style="width: 30rem;">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Formulario de Contacto</h2> 
+                
+                <form action="procesar_formulario.php" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre Completo</label> 
+                        <input type="text" id="nombre" name="nombre" class="form-control">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label> 
+                        <input type="tel" id="telefono" name="telefono" class="form-control">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tipo_documento" class="form-label">Tipo de Documento</label> 
+                        <select id="tipo_documento" name="tipo_documento" class="form-control"> 
+                            <option value="cedula">Cédula</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="numero_documento" class="form-label">Número de Documento</label> 
+                        <input type="text" id="numero_documento" name="numero_documento" class="form-control">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo Electrónico</label> 
+                        <input type="email" id="email" name="email" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="proyecto" class="form-label">Selecciona un proyecto:</label>
+                        <select id="proyecto" name="proyecto" class="form-select" required>
+                            <option value= "" selected disabled>Elige un proyecto</option>
+                            <option value="1">MYR72</option>
+                            <option value="6">Altos De Rincon De Varsovia</option>
+                            <option value="7">Prados De Varsovia</option>
+                            <option value="8">Rincon De Varsovia</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Enviar</button> 
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
