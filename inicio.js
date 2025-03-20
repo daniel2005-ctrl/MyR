@@ -115,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+<<<<<<< HEAD
 document.addEventListener("DOMContentLoaded", function () {
     const registerLink = document.querySelector("#loginModal a[href='#']"); // Enlace "Regístrate aquí"
     const registerModal = document.getElementById("registerModal"); // Modal de registro
@@ -148,6 +149,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+=======
+>>>>>>> 968d081918f80ec7aa605e5a5755f46d49945d88
 document.addEventListener("DOMContentLoaded", function () {     
     const passwordInput = document.getElementById("password");
 
