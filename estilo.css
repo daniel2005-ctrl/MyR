@@ -42,12 +42,9 @@ body {
 /* Estilo para la sección hero, que tiene una imagen de fondo con un gradiente y se usa típicamente para captar atención */
 .hero {
     position: relative;  /* Necesario para posicionar correctamente elementos hijos */
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-<<<<<<< HEAD
-                url("imagenes/myr72/Fondo 72.png") no-repeat center center/cover;  /* Fondo con gradiente y una imagen */
-=======
-                url("imagenes/fondo73.png") no-repeat center center/cover;  /* Fondo con gradiente y una imagen */
->>>>>>> 968d081918f80ec7aa605e5a5755f46d49945d88
+    background: url("imagenes/Fondo\ 72.jpg") no-repeat center center/cover;  /* Fondo con gradiente y una imagen */
+
+              
     height: 145vh;  /* Hace que la altura sea un 45% más grande que la altura del viewport */
     display: flex;  /* Se usa para crear un contenedor flexible */
     align-items: center;  /* Centra los elementos verticalmente */

@@ -1,48 +1,69 @@
 <?php
 session_start();
+header("Content-Type: application/json");
 
+// Configurar la base de datos
 $host = "localhost";
 $user = "root";
 $password = "";
 $dbname = "myr";
 
-// Conexión a la base de datos
+// Conectar a la base de datos
 $conn = new mysqli($host, $user, $password, $dbname);
-
-// Verificar conexión
 if ($conn->connect_error) {
-    die(json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]));
+    die(json_encode(["success" => false, "message" => "Error de conexión: " . $conn->connect_error]));
 }
 
-// Verificar si la solicitud es POST
+// Verificar si los datos llegan correctamente
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $nombre = $_POST['nombre'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    // Verificar si el correo ya está registrado
-    $sql = "SELECT id_usu FROM usuarios WHERE email = ?";
+    // 🔹 Guardar los datos recibidos en un archivo para depuración
+    file_put_contents("debug_registro.txt", "Nombre: $nombre, Email: $email, Password: $password\n", FILE_APPEND);
+
+    if (empty($nombre) || empty($email) || empty($password)) {
+        echo json_encode(["success" => false, "message" => "Todos los campos son obligatorios."]);
+        exit;
+    }
+
+    // Verificar si el email ya está registrado
+    $sql = "SELECT email FROM usuarios WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        echo json_encode(["status" => "error", "message" => "Este correo ya está registrado."]);
-    } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $insert_sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
-        $insert_stmt = $conn->prepare($insert_sql);
-        $insert_stmt->bind_param("sss", $nombre, $email, $hashed_password);
+        echo json_encode(["success" => false, "message" => "El correo ya está registrado."]);
+        exit;
+    }
+    $stmt->close();
 
-        if ($insert_stmt->execute()) {
-            echo json_encode(["status" => "success", "message" => "¡Registro exitoso! Ahora puede iniciar sesión."]);
-        } else {
-            echo json_encode(["status" => "error", "message" => "Error al registrar usuario."]);
-        }
-        $insert_stmt->close();
+    // Encriptar la contraseña
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insertar nuevo usuario
+    $sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $nombre, $email, $hashed_password);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Registro exitoso"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Error al registrar usuario."]);
     }
     $stmt->close();
 }
 $conn->close();
+
+// 🔹 Mostrar datos en la respuesta JSON para depuración
+echo json_encode([
+    "post_data" => $_POST,
+    "success" => false,
+    "message" => "Depuración: revisa la consola"
+]);
+exit;
+
 ?>
