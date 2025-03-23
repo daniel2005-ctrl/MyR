@@ -1,6 +1,7 @@
 <?php
 session_start();
-header("Content-Type: application/json");
+header('Content-Type: application/json'); // Asegura que el servidor devuelve JSON
+ob_clean(); // Limpia cualquier salida previa
 
 // Configurar la base de datos
 $host = "localhost";
@@ -16,9 +17,9 @@ if ($conn->connect_error) {
 
 // Verificar si los datos llegan correctamente
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['nombre'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $nombre = $_POST['newnombre'] ?? '';
+    $email = $_POST['newemail'] ?? '';
+    $password = $_POST['newpassword'] ?? '';
 
     // 🔹 Guardar los datos recibidos en un archivo para depuración
     file_put_contents("debug_registro.txt", "Nombre: $nombre, Email: $email, Password: $password\n", FILE_APPEND);
@@ -59,11 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $conn->close();
 
 // 🔹 Mostrar datos en la respuesta JSON para depuración
-echo json_encode([
-    "post_data" => $_POST,
-    "success" => false,
-    "message" => "Depuración: revisa la consola"
-]);
-exit;
+echo json_encode(["success" => true, "message" => "Registro exitoso"]);
+exit; // 🔹 Finaliza el script para evitar texto extra
+
 
 ?>

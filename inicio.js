@@ -40,45 +40,23 @@ document.addEventListener("DOMContentLoaded", function () {
         loginFormContainer.style.display = "block";
     });
 
-    loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        let formData = new FormData(loginForm);
-        fetch("login.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                localStorage.setItem("usuario", data.usuario);
-                cerrarModal();
-                mostrarMenuUsuario(data.usuario);
+    
+    function mostrarError(message, type) {
+        let errorMensaje = document.getElementById(`errorMensaje-${type}`);
+        if (!errorMensaje) {
+            errorMensaje = document.createElement("p");
+            errorMensaje.id = `errorMensaje-${type}`;
+            errorMensaje.style.color = "red";
+            errorMensaje.style.fontWeight = "bold";
+            if (type === "login") {
+                loginForm.appendChild(errorMensaje);
             } else {
-                mostrarError("Usuario o contraseña incorrectos. Intenta de nuevo.");
+                registerForm.appendChild(errorMensaje);
             }
-        })
-        .catch(error => console.error("Error en la solicitud:", error));
-    });
-
-    registerForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        let formData = new FormData(registerForm);
-        fetch("registro.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "success") {
-                alert(data.message);
-                registerForm.reset();
-                document.getElementById("switchToLogin").click();
-            } else {
-                mostrarError(data.message);
-            }
-        })
-        .catch(error => console.error("Error en la solicitud:", error));
-    });
+        }
+        errorMensaje.innerText = message;
+    }
+});
 
     function cerrarModal() {
         loginModal.style.display = "none";
@@ -155,59 +133,62 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-});
 
-    // --- LOGIN ---
-    loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-        let formData = new FormData(loginForm);
-        fetch("login.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Respuesta del login:", data); // Ver en consola
-            if (data.success) {
-                localStorage.setItem("usuario", data.usuario);
-                cerrarModal();
-                mostrarMenuUsuario(data.usuario);
-            } else {
-                mostrarError("Usuario o contraseña incorrectos. Intenta de nuevo.");
-            }
-        })
-        .catch(error => console.error("Error en la solicitud:", error));
-    });
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let formData = new FormData(loginForm);
+            console.log("Enviando datos de login:", Object.fromEntries(formData));
 
-    // --- REGISTRO ---
-    registerForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-    
-        let formData = new FormData(registerForm);
-    
-        // 🔹 Mostrar los valores en la consola
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-    
-        fetch("registro.php", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Respuesta del servidor:", data);
-    
-            if (data.success) {
-                alert("Registro exitoso");
-                registerForm.reset();
-                document.getElementById("switchToLogin").click();
-            } else {
-                mostrarError(data.message);
-            }
-        })
-        .catch(error => console.error("Error en la solicitud:", error));
-    });
+            fetch("login.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Respuesta del login:", data);
+                if (data.success) {
+                    localStorage.setItem("usuario", data.usuario);
+                    cerrarModal();
+                    mostrarMenuUsuario(data.usuario);
+                } else {
+                    mostrarError(data.message, "login");
+                }
+            })
+            .catch(error => console.error("Error en la solicitud:", error));
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let formData = new FormData(registerForm);
+            console.log("Enviando datos de registro:", Object.fromEntries(formData));
+
+            fetch("registro.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())  // 🔹 Primero obtenemos la respuesta como texto
+            .then(text => {
+                console.log("Respuesta del servidor (raw):", text);  // 🔹 Ver en consola el texto recibido
+                return JSON.parse(text);  // 🔹 Convertimos manualmente a JSON
+            })
+            .then(data => {
+                console.log("Respuesta del registro (JSON):", data);
+                if (data.success) {
+                    alert("Registro exitoso");
+                    registerForm.reset();
+                    document.getElementById("switchToLogin").click();
+                } else {
+                    mostrarError(data.message, "registro");
+                }
+            })
+            .catch(error => console.error("Error en la solicitud:", error));
+            
+        });
+    }
+
     
     
 
@@ -216,17 +197,22 @@ document.addEventListener("DOMContentLoaded", function () {
         modalOverlay.style.display = "none";
     }
 
-    function mostrarError(message) {
-        let errorMensaje = document.getElementById("errorMensaje");
+    function mostrarError(message, type) {
+        let errorMensaje = document.getElementById(`errorMensaje-${type}`);
         if (!errorMensaje) {
             errorMensaje = document.createElement("p");
-            errorMensaje.id = "errorMensaje";
+            errorMensaje.id = `errorMensaje-${type}`;
             errorMensaje.style.color = "red";
             errorMensaje.style.fontWeight = "bold";
-            loginForm.appendChild(errorMensaje);
+            if (type === "login") {
+                loginForm.appendChild(errorMensaje);
+            } else {
+                registerForm.appendChild(errorMensaje);
+            }
         }
         errorMensaje.innerText = message;
     }
+
 
     function mostrarMenuUsuario(usuario) {
         loginButton.outerHTML = `
