@@ -144,7 +144,7 @@ body {
     width: 150px; /* Ancho fijo */
     text-align: center; /* Centrado del contenido */
     transition: transform 0.3s, box-shadow 0.3s; /* Animaciones suaves */
-    cursor: pointer; /* Indica que es interactivo */
+     /* Indica que es interactivo */
 }
 
 /* Imagen dentro de la tarjeta */
