@@ -41,14 +41,14 @@
             <input type="text" id="separacion" class="form-control" readonly>
         </div>
 
-        <div class="mb-3">
-            <label for="ingresos" class="form-label">Valor de ingresos promedio mensual:</label>
-            <input type="number" id="ingresos" class="form-control">
+        <div class="form-check form-switch mt-3">
+            <input class="form-check-input" type="checkbox" id="tiene-ahorros" onchange="mostrarCampoAhorros()">
+            <label class="form-check-label" for="tiene-ahorros">¿Tienes ahorros, cesantías, primas u otros?</label>
         </div>
 
-        <div class="mb-3">
-            <label for="sueldo-anual" class="form-label">Sueldo anual:</label>
-            <input type="text" id="sueldo-anual" class="form-control" readonly>
+        <div id="campo-ahorros" class="mb-3 mt-3" style="display: none;">
+            <label for="total-ahorros" class="form-label">Total ahorros:</label>
+            <input type="number" id="total-ahorros" class="form-control" value="0">
         </div>
 
         <div class="mb-3">
@@ -57,6 +57,7 @@
                 <option value="12">12 meses</option>
                 <option value="24">24 meses</option>
                 <option value="36">36 meses</option>
+                <option value="48">48 meses</option>
             </select>
         </div>
         
@@ -68,38 +69,61 @@
     
     <script>
         document.getElementById("vivienda").addEventListener("change", calcularCuotas);
-        document.getElementById("ingresos").addEventListener("input", calcularSueldoAnual);
-        document.getElementById("meses-modificable").addEventListener("change", calcularCuotaModificada);
+        document.getElementById("meses-modificable").addEventListener("change", calcularCuotaMensual);
+        document.getElementById("total-ahorros").addEventListener("input", calcularCuotaMensual);
 
         function formatearNumero(numero) {
-            return numero.toLocaleString("es-CO");
+            return Math.round(numero).toLocaleString("es-CO");
         }
 
         function calcularCuotas() {
             let viviendaSelect = document.getElementById("vivienda");
             let selectedOption = viviendaSelect.options[viviendaSelect.selectedIndex];
+
+            if (!selectedOption || !selectedOption.hasAttribute("data-precio")) {
+                document.getElementById("valor").value = "";
+                document.getElementById("cuota-inicial").value = "";
+                document.getElementById("separacion").value = "";
+                document.getElementById("cuota-mensual").value = "";
+                return;
+            }
+
             let precio = parseFloat(selectedOption.getAttribute("data-precio")) || 0;
-            
             let cuotaInicial = precio * 0.30;
             let separacion = cuotaInicial * 0.10;
-            
+
             document.getElementById("valor").value = formatearNumero(precio);
             document.getElementById("cuota-inicial").value = formatearNumero(cuotaInicial);
             document.getElementById("separacion").value = formatearNumero(separacion);
-        }
-        
-        function calcularSueldoAnual() {
-            let ingresoMensual = parseFloat(document.getElementById("ingresos").value) || 0;
-            let sueldoAnual = ingresoMensual * 12;
-            document.getElementById("sueldo-anual").value = formatearNumero(sueldoAnual);
-            calcularCuotaModificada();
+            
+            calcularCuotaMensual();
         }
 
-        function calcularCuotaModificada() {
-            let sueldoAnual = parseFloat(document.getElementById("sueldo-anual").value.replace(/\./g, "")) || 0;
-            let meses = parseInt(document.getElementById("meses-modificable").value);
-            let cuotaMensual = (sueldoAnual * 0.35) / meses;
-            document.getElementById("cuota-mensual").value = formatearNumero(cuotaMensual);
+        function mostrarCampoAhorros() {
+            let campo = document.getElementById("campo-ahorros");
+            campo.style.display = document.getElementById("tiene-ahorros").checked ? "block" : "none";
+            calcularCuotaMensual();
+        }
+
+        function calcularCuotaMensual() {
+            let cuotaInicialElem = document.getElementById("cuota-inicial");
+
+            if (!cuotaInicialElem.value || cuotaInicialElem.value === "0") {
+                document.getElementById("cuota-mensual").value = "";
+                return;
+            }
+
+            let cuotaInicial = parseFloat(cuotaInicialElem.value.replace(/\./g, "")) || 0;
+            let separacion = parseFloat(document.getElementById("separacion").value.replace(/\./g, "")) || 0;
+            let meses = parseInt(document.getElementById("meses-modificable").value) || 12;
+
+            let tieneAhorros = document.getElementById("tiene-ahorros").checked;
+            let totalAhorros = tieneAhorros ? (parseFloat(document.getElementById("total-ahorros").value) || 0) : 0;
+
+            let saldoPendiente = cuotaInicial - (separacion + totalAhorros);
+            let cuotaMensual = saldoPendiente > 0 ? saldoPendiente / meses : 0;
+
+            document.getElementById("cuota-mensual").value = saldoPendiente > 0 ? formatearNumero(cuotaMensual) : "";
         }
     </script>
     
