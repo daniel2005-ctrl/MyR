@@ -4,7 +4,7 @@ body {
     display: grid;
     justify-content: center;
     align-items: center;
-    height: 150vh;
+    height: 200vh;
     margin: 0;
     background: url("imagenes/Fondo\ 72.jpg") no-repeat center center/cover;  /* Fondo con gradiente y una imagen */
 

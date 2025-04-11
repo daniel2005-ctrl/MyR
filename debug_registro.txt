@@ -18,3 +18,5 @@ Nombre: David, Email: david@gmail.com, Password: 123
 Nombre: Jhonatan, Email: jh@gmail.com, Password: 123
 Nombre: Jhonatan, Email: 9@gmail.com, Password: 123
 Nombre: David, Email: 10@gmail.com, Password: 123
+Nombre: David, Email: sh@gmail.com, Password: 123
+Nombre: Jhonatan, Email: 85@gmail.com, Password: 123

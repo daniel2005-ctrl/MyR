@@ -402,3 +402,25 @@ body {
 .dropdown-content a:hover {
     background-color:  #FFA500; /* Un poco más claro al pasar el mouse */
 }
+
+
+.carousel-fade .carousel-item {
+    transition: opacity 1s ease-in-out;
+}
+.carousel-item img {
+    object-fit: cover;
+    height: 500px; /* Ajusta la altura */
+}
+.animate-caption {
+    animation: fadeInUp 1s ease-in-out;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

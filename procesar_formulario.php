@@ -20,18 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener y limpiar datos del formulario
     $nombre = trim($_POST['nombre']);
     $telefono = trim($_POST['telefono']);
-    $tipo_d = trim($_POST['tipo_documento']); // Nuevo campo agregado
-    $documento = trim($_POST['numero_documento']); // Nuevo campo agregado
     $email = trim($_POST['email']);
     $id_pro = trim($_POST['proyecto']); // ID del proyecto seleccionado
     $fecha_envio = date("Y-m-d H:i:s"); // Fecha y hora actual
 
     // Validar que los campos no estén vacíos
-    if (!empty($nombre) && !empty($telefono) && !empty($tipo_d) && !empty($documento) && !empty($email) && !empty($id_pro)) {
+    if (!empty($nombre) && !empty($telefono)  && !empty($email) && !empty($id_pro)) {
         
         // Preparar la consulta SQL para evitar SQL Injection
-        $stmt = $conn->prepare("INSERT INTO clientes (nombre, telefono, tipo_d, documento, email, id_pro, fecha_envio) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssisis", $nombre, $telefono, $tipo_d, $documento, $email, $id_pro, $fecha_envio);
+        $stmt = $conn->prepare("INSERT INTO clientes (nombre, telefono, email, id_pro, fecha_envio) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssis", $nombre, $telefono,  $email, $id_pro, $fecha_envio);
 
         // Ejecutar la consulta y verificar si fue exitosa
         if ($stmt->execute()) {
