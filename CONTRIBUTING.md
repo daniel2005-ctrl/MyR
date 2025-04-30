@@ -9,10 +9,10 @@
 - `mejora-proyectos` → Cambios en los proyectos mostrados.
 - `mejora-otros` → Ajustes generales (por ejemplo, cotizaciones, vistas menores, etc).
 - `mejora-conexiones` → Conexiones backend, lógica de formularios, autenticación, etc.
-- `admin-index`
-- `admin-proyectos`
-- `admin-otros`
-- `admin-conexiones`
+- `admin-index` → Mejoras y rediseño del índice exclusivo del administrador (panel principal de control).  
+- `admin-proyectos` → Gestión y edición de proyectos por parte del administrador.  
+- `admin-otros` → Mejoras generales para el panel de admin (perfil, navegación, configuración).  
+- `admin-conexiones` → Conexiones backend (formulario, login, bases de datos, etc.) usadas por el admin.  
 
 ## 🧑‍💻 ¿Cómo contribuir?
 
