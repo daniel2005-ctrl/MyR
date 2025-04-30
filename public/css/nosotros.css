@@ -1,0 +1,169 @@
+/* Línea negra superior en el header */
+.header {
+    background-color: #ff6600; /* Color de fondo naranja */
+    padding: 20px 0; /* Espaciado interno arriba y abajo */
+    text-align: center; /* Centra el contenido */
+    position: relative; /* Permite posicionar elementos internos */
+}
+
+/* Estilos del título en el header */
+.header h1 {
+    color: rgb(0, 0, 0); /* Color negro para el texto */
+    font-size: 2rem; /* Tamaño del texto */
+    margin: 10px 0 0 0; /* Margen superior para ajustar el espacio */
+}
+
+/* Contenedor principal */
+.section-background {
+    position: relative; /* Permite posicionar elementos hijos absolutamente */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    height: 300px; /* Altura del contenedor, ajustable según necesidades */
+    overflow: hidden; /* Oculta el contenido que se salga del área */
+    display: flex; /* Usa flexbox para centrar contenido */
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+}
+
+/* Imagen de fondo */
+.background-image {
+    position: absolute; /* Se posiciona sobre el contenedor */
+    top: 0;
+    left: 0;
+    width: 100%; /* Ocupa todo el ancho */
+    height: 100%; /* Ocupa toda la altura */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+    z-index: -2; /* Se envía al fondo, detrás del texto */
+}
+
+/* Capa oscura */
+.overlay {
+    position: absolute; /* Se superpone sobre la imagen */
+    top: 0;
+    left: 0;
+    width: 100%; /* Cubre todo el contenedor */
+    height: 100%; /* Misma altura del contenedor */
+    background: rgba(0, 0, 0, 0.5); /* Filtro oscuro semi-transparente */
+    z-index: -1; /* Se coloca detrás del texto pero delante de la imagen */
+}
+
+/* Texto dentro de la sección */
+.section-background h2 {
+    color: white; /* Color del texto */
+    font-size: 1.8rem; /* Tamaño del texto */
+    text-align: center; /* Centrado del texto */
+    z-index: 1; /* Asegura que quede encima de la imagen y la capa oscura */
+}
+
+/* Banner con imagen de fondo */
+.image-banner {
+    position: relative; /* Permite superposiciones con ::before */
+    background: url("C:\Users\mariana.ramirez\OneDrive - Inchcape\Documentos\pagina\imagen\Conocenooos.png") no-repeat center center/cover; /* Imagen de fondo */
+    height: 300px; /* Altura del banner */
+    width: 100vw; /* Ocupa todo el ancho de la pantalla */
+    display: flex; /* Usa flexbox para centrar contenido */
+    align-items: center; /* Centrado vertical */
+    justify-content: center; /* Centrado horizontal */
+    color: white; /* Color del texto */
+    text-align: center; /* Texto centrado */
+    margin: 0; /* Sin márgenes para evitar desplazamiento */
+    padding: 0; /* Sin espaciado interno */
+    overflow-x: hidden; /* Evita el desplazamiento horizontal */
+}
+
+/* Capa oscura sobre la imagen del banner */
+.image-banner::before {
+    content: ""; /* Elemento vacío para superposición */
+    position: absolute; /* Se coloca sobre la imagen */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Efecto de oscurecimiento */
+}
+
+/* Texto dentro del banner */
+.image-banner h2 {
+    position: relative; /* Asegura que el texto esté sobre la capa oscura */
+    z-index: 1; /* Mantiene el texto visible */
+}
+
+/* Estilos generales */
+.text-primary {
+    color: #000000 !important; /* Texto en color negro con prioridad */
+}
+
+/* Imágenes dentro de secciones */
+.content-section img {
+    border-radius: 15px; /* Bordes redondeados para las imágenes */
+}
+
+/* Efecto de subrayado al pasar el mouse */
+.hover-underline:hover {
+    text-decoration: underline; /* Agrega subrayado al pasar el mouse */
+}
+
+/* Evitar desplazamiento horizontal en toda la página */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Oswald', sans-serif; /* Fuente personalizada */
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Color de fondo claro */
+    text-align: center; /* Texto centrado en general */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el body ocupe toda la pantalla */
+}
+
+/* Título de la sección de valores */
+.valores h2 {
+    font-size: 2rem; /* Tamaño del título */
+    margin-bottom: 20px; /* Espaciado debajo del título */
+}
+
+/* Contenedor de valores */
+.valores-container {
+    display: flex; /* Usa flexbox para alinear elementos */
+    justify-content: center; /* Centra horizontalmente */
+    gap: 20px; /* Espaciado entre tarjetas */
+    flex-wrap: wrap; /* Permite que las tarjetas se acomoden en varias líneas */
+    padding: 20px; /* Espaciado interno */
+}
+
+/* Estilos de cada tarjeta */
+.valor-card {
+    background: white; /* Fondo blanco */
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+    padding: 15px; /* Espaciado interno */
+    width: 150px; /* Ancho fijo */
+    text-align: center; /* Centrado del contenido */
+    transition: transform 0.3s, box-shadow 0.3s; /* Animaciones suaves */
+}
+
+/* Imagen dentro de la tarjeta */
+.valor-card img {
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */
+    height: 100px; /* Altura fija */
+    object-fit: cover; /* Ajusta la imagen sin deformarla */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Texto dentro de la tarjeta */
+.valor-card p {
+    font-size: 1rem; /* Tamaño del texto */
+    font-weight: bold; /* Texto en negrita */
+    margin-top: 10px; /* Espaciado superior */
+}
+
+/* Efecto hover en las tarjetas */
+.valor-card:hover {
+    transform: translateY(-5px); /* Eleva la tarjeta al pasar el mouse */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+}
+

@@ -1,0 +1,165 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url("imagenes/myr72/Fondo 72.png") no-repeat center center/cover;
+    font-family: Oswald, sans-serif;
+    margin: 0;
+}
+
+.registro-container {
+    display: flex;
+    width: 800px;
+    height: 450px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.left-section {
+    width: 50%;
+    background: linear-gradient(135deg, #ff6a00, #ff6a00);
+    padding: 50px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right-section {
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox-container input {
+    margin-right: 10px;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #ff6a00;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #005bb5;
+}
+
+.login-link {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.login-link a {
+    color: #ff6a00;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilos para la capa de fondo del mensaje de éxito */
+#success-message-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+/* Estilos para el mensaje de éxito */
+#success-message {
+    background: #ffffff;
+    color: #2d7d2d;
+    padding: 30px;
+    width: 400px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    border: 3px solid #28a745;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de aparición */
+@keyframes fadeIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Ícono de check */
+#success-message p::before {
+    content: "✅ ";
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Botón de cerrar */
+#success-message button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin-top: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#success-message button:hover {
+    background: #1e7d32;
+}
+
+.hidden {
+    display: none !important;
+}

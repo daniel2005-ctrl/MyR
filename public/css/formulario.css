@@ -1,0 +1,148 @@
+/* ====== ESTILOS GENERALES ====== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    height: 100vh;
+}
+
+/* Nuevo contenedor para centrar el formulario */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.formulario {
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.formulario::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* ====== CONTENEDOR PRINCIPAL DEL FORMULARIO ====== */
+.registro-container {
+    background: #2b2b2b;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ====== TÍTULO ====== */
+h1 {
+    color: white;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #00c853;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* ====== CAMPOS DE ENTRADA ====== */
+.input-container {
+    display: flex;
+    align-items: center;
+    background: #3a3a3a;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.input-container .icon {
+    margin-right: 10px;
+    color: #00c853;
+}
+
+.input-container input {
+    background: none;
+    border: none;
+    outline: none;
+    color: white;
+    width: 100%;
+}
+
+/* ====== ENLACE "OLVIDÓ SU CONTRASEÑA" ====== */
+.forgot-password {
+    font-size: 12px;
+    color: white;
+}
+
+.forgot-password a {
+    color: #00c853;
+    text-decoration: none;
+}
+
+/* ====== BOTONES ====== */
+.btn {
+    width: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+}
+
+.registro {
+    background: #00c853;
+    color: white;
+}
+
+.login {
+    background: white;
+    color: black;
+}
+
+/* ====== MENSAJE DE REGISTRO EXITOSO ====== */
+#success-message {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 40px;
+    width: 350px;
+    border-radius: 10px;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#success-message p {
+    font-size: 22px;
+}
+
+#success-message button {
+    background: #00c853;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin-top: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ====== SWEETALERT OVERLAY FIX ====== */
+.swal2-container {
+    position: fixed !important;
+    inset: 0 !important; /* Asegura que cubra toda la pantalla */
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(0, 0, 0, 0.75) !important; /* Fondo oscuro semitransparente */
+}
+
+/* ====== CLASE PARA OCULTAR ELEMENTOS ====== */
+.hidden {
+    display: none;
+}
