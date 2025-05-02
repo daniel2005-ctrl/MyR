@@ -40,6 +40,10 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .alert {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -48,7 +52,17 @@
     <h2 class="text-center mb-4">Formulario de Contacto</h2> 
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     <form action="{{ route('formulario.store') }}" method="POST">
@@ -65,31 +79,21 @@
         </div>
 
         <div class="mb-3">
-            <label for="tipo_documento" class="form-label">Tipo de Documento</label> 
-            <select id="tipo_documento" name="tipo_documento" class="form-control" required>
-                <option value="cedula">Cédula</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="numero_documento" class="form-label">Número de Documento</label> 
-            <input type="text" id="numero_documento" name="numero_documento" class="form-control" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label> 
-            <input type="email" id="email" name="email" class="form-control" required>
+            <label for="correo" class="form-label">Correo Electrónico</label> 
+            <input type="email" id="correo" name="correo" class="form-control @error('correo') is-invalid @enderror" value="{{ old('correo') }}" required>
+           
         </div>
 
         <div class="mb-3">
             <label for="proyecto" class="form-label">Selecciona un proyecto:</label>
-            <select id="proyecto" name="proyecto" class="form-select" required>
-                <option value="" selected disabled>Elige un proyecto</option>
-                <option value="1">MYR72</option>
-                <option value="2">Altos De Rincon De Varsovia</option>
-                <option value="3">Prados De Varsovia</option>
-                <option value="4">Rincon De Varsovia</option>
+            <select id="proyecto" name="proyecto" class="form-select @error('proyecto') is-invalid @enderror" required>
+                <option value="" {{ old('proyecto') ? '' : 'selected' }} disabled>Elige un proyecto</option>
+                <option value="1" {{ old('proyecto') == '1' ? 'selected' : '' }}>MYR72</option>
+                <option value="2" {{ old('proyecto') == '2' ? 'selected' : '' }}>Altos De Rincon De Varsovia</option>
+                <option value="3" {{ old('proyecto') == '3' ? 'selected' : '' }}>Prados De Varsovia</option>
+                <option value="4" {{ old('proyecto') == '4' ? 'selected' : '' }}>Rincon De Varsovia</option>
             </select>
+
         </div>
 
         <button type="submit">Enviar</button> 

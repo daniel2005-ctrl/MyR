@@ -106,4 +106,20 @@
     @endpush
 @endif
 
+@if (session('warning'))
+    @push('scripts')
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Acceso Denegado',
+            text: '{{ session('warning') }}',
+            confirmButtonText: 'Aceptar',
+            timer: 5000,  // Duración de la alerta en milisegundos
+            timerProgressBar: true
+        });
+    </script>
+    @endpush
+@endif
+
+
 @endsection
