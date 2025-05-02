@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PerfilController;
-
+use App\Http\Controllers\CotizacionController;
 
 // Página principal
 Route::get('/', function () {
@@ -19,10 +19,18 @@ Route::view('/nosotros', 'nosotros')->name('nosotros');
 Route::view('/proyecto1', 'proyecto1')->name('proyecto1');
 Route::view('/formulario', 'formulario')->name('formulario');
 
-// Cotización (requiere autenticación)
 Route::get('/cotizacion', function () {
+    if (!Auth::check()) {
+        // Usuario no está autenticado
+        session()->flash('warning', 'debes iniciar sesión para acceder a esta sección.');
+        return redirect()->route('home');
+    }
+    
     return view('cotizacion');
-})->middleware('auth')->name('cotizacion');
+})->name('cotizacion');
+
+
+Route::post('/generar-pdf', [CotizacionController::class, 'generarPDF'])->name('generar.pdf');
 
 // Autenticación
 Route::post('/login', [AuthController::class, 'login']);
@@ -44,10 +52,13 @@ Route::post('password/reset',  [AuthController::class, 'reset'])
 Route::post('/enviar-formulario', [FormularioController::class, 'store'])->name('formulario.store');
 Route::get('/proyecto/{id}',      [ProyectoController::class, 'show'])->name('proyecto.show');
 
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil.edit');
-    Route::post('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
+    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
 });
+
 
 Route::get('/admin/index', function () {
      return view('admin.index'); // Crea esta vista en resources/views/admin/index.blade.php

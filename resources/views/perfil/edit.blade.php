@@ -5,9 +5,10 @@
 @endpush
 
 @section('content')
+<br>
 
-<div class="wrapper">
-    <div class="container">
+<div class="edit-wrapper"> {{-- NUEVO WRAPPER PARA AISLAR ESTILOS --}}
+    <div class="profile-container"> {{-- CAMBIAMOS .container por una clase única --}}
         <div class="w-100">
             <header class="text-center py-3 bg-white rounded shadow-sm">
                 <h1>Editar Perfil</h1>
@@ -77,13 +78,6 @@
             <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
                 <img src="{{ asset('imagenes/otros/home.png') }}" alt="Inicio" style="height: 20px; margin-right: 8px;">
                 Inicio
-            </a>
-        </div>
-
-        <div style="position: fixed; top: 20%; right: 10px; transform: translateY(-50%); z-index: 999;">
-            <a href="{{ url('cotizacion') }}" class="btn btn-light shadow-sm d-flex align-items-center" style="border-radius: 10px; color: orange; font-weight: bold;">
-                <img src="{{ asset('imagenes/otros/cotiza.jpg') }}" alt="Cotiza Ya" style="height: 20px; margin-right: 8px;">
-                <span>Cotiza Ya</span>
             </a>
         </div>
     </div>
