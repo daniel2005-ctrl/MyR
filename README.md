@@ -25,3 +25,8 @@ MYR Proyectos es una plataforma diseñada para gestionar y mostrar los proyectos
 
    ```bash
    git clone https://github.com/daniel2005-ctrl/MyR.git
+## Contribuciones
+
+Si Eres uno de los cotribuidores oficiales de este proyecto, por favor sigue las instrucciones detalladas en nuestro archivo de contribuciones [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+¡Gracias por colaborar con MyR Construcciones S.A.S!
