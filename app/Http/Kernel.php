@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\IsAdmin;  // Middleware para verificar si el usuario es admin
 
 class Kernel extends HttpKernel
 {
@@ -57,5 +58,10 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,  // Redirige a los usuarios autenticados a la ruta deseada
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,  // Middleware para limitar el número de peticiones
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,  // Asegura que el usuario tenga el correo verificado
+        'is_admin' => \App\Http\Middleware\IsAdmin::class,
     ];
 }
+
+
+
+

@@ -2,50 +2,53 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Usuario; // 🔍 Importa el modelo Usuario
 
 class Proyecto extends Model
 {
-    protected $table = 'proyectos';
+    use HasFactory;
 
-    protected $primaryKey = 'id_pro';
+    protected $table = 'proyectos';
+    protected $primaryKey = 'id_pro';     // ← tu clave primaria personalizada
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nombre_pro',
-        'tipo_pro',
-        'tamano_pro',
         'descripcion',
-        'terminado',
+        'precio_min',
+        'precio_max',
+        'area_min',
+        'area_max',
+        'ubicacion_pro',
         'imagenes_pro',
         'videos_pro',
-        'ubicacion_pro',
-        'id_usu',
+        'id_tipo_permiso',
     ];
 
-    public $timestamps = true;
+    protected $casts = [
+        'imagenes_pro' => 'array',
+        'videos_pro' => 'array',
+    ];
 
-    /**
-     * Relación con Usuario (propietario del proyecto)
-     */
-    public function usuario()
+    public function getImagenesProAttribute($value)
     {
-        return $this->belongsTo(Usuario::class, 'id_usu', 'id');
+        return json_decode($value, true);
     }
 
-    /**
-     * Si en el futuro quieres relacionarlo con Clientes:
-     * 
-     * public function cliente()
-     * {
-     *     return $this->hasOne(Cliente::class, 'id_pro', 'id_pro');
-     * }
-     * 
-     * O con Subsidios:
-     * 
-     * public function subsidio()
-     * {
-     *     return $this->hasOne(Subsidio::class, 'id_pro', 'id_pro');
-     * }
-     */
+    public function setImagenesProAttribute($value)
+    {
+        $this->attributes['imagenes_pro'] = json_encode(is_array($value) ? $value : json_decode($value, true));
+    }
+
+    public function getVideosProAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    public function setVideosProAttribute($value)
+    {
+        $this->attributes['videos_pro'] = json_encode(is_array($value) ? $value : json_decode($value, true));
+    }
 }

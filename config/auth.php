@@ -17,7 +17,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Usuario::class, // 👈 ¡Tu modelo real aquí!
+            'model' => App\Models\Usuario::class, 
         ],
     ],
 
@@ -31,5 +31,15 @@ return [
     ],
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+  'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Usuario::class,
+    ],
+],
+
+
+
 
 ];

@@ -125,9 +125,13 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
+
+        console.log("gdcgfdgfgfg", data);
         // Si es admin, redirigimos al dashboard de admin
         if (data.es_admin) {
           window.location.href = "/admin";
+
+
           return;
         }
 

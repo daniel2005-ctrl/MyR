@@ -8,10 +8,20 @@ use App\Notifications\ResetPasswordNotification;  // Importa la notificación pe
 
 class Usuario extends Authenticatable
 {
+
+   public function isAdmin()
+{
+    return $this->tipo_permiso_id === 1;
+}
+
     use Notifiable;
 
     // Nombre de la tabla en BD
     protected $table = 'usuarios';
+    public function esAdmin(): bool
+    {
+        return $this->tipo_permiso_id === 1;
+    }
 
     // Primaria (opcional si es 'id')
     protected $primaryKey = 'id';
@@ -30,14 +40,14 @@ class Usuario extends Authenticatable
         'remember_token',
     ];
 
+    
+
     // Laravel gestiona created_at/updated_at
     public $timestamps = true;
 
-    // Relación con TipoPermiso
-    public function tipoPermiso()
-    {
-        return $this->belongsTo(TipoPermiso::class, 'tipo_permiso_id');
-    }
+   
+
+    
 
     // Relación muchos a muchos con permisos
     public function permisos()
@@ -55,11 +65,23 @@ class Usuario extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
-    public function esAdmin()
-{
-    return $this->tipo_permiso_id === 1;
+   
     
+
+   
+
+    public function tipoPermiso()
+    {
+        return $this->belongsTo(TipoPermiso::class, 'tipo_permiso_id');
+    }
+
+   
+
 }
     
-}
+
+
+
+
+
 
