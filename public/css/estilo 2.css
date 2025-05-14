@@ -164,15 +164,30 @@ footer p a:hover {
     }
 }
 
-.row .col-md-5 {
-    display: flex;
-    align-items: stretch;
+/* Imágenes de proyecto */
+.imagenes-proyecto {
+    height: 400px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.row .col-md-5 img {
-    object-fit: cover;
-    height: 100%;
+/* Imágenes de apartamentos*/
+.titulo-apartamentos {
+    background: #FF9000;
+    padding: 5px 15px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.imagenes-apartamento {
+    height: 400px;
     width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
 }
 
 /* Tipografía */
@@ -190,10 +205,6 @@ p {
 
 .border {
     background-color: #f9f9f9;
-}
-
-img {
-    object-fit: contain;
 }
 
 /* Section 14 */

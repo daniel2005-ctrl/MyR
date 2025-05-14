@@ -3,98 +3,224 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
+use App\Models\ZonaCatalogo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Estado;
+
 
 class ProyectoController extends Controller
 {
-    /**
-     * Mostrar todos los proyectos.
-     */
-    public function index()
-    {
-        $proyectos = Proyecto::paginate(10);
-        return view('index', compact('proyectos'));
+   public function index()
+{
+    // Determina si el usuario está autenticado y su tipo
+    if (Auth::check()) {
+        // Si es administrador, mostrar todos los proyectos
+        if (Auth::user()->tipo_permiso_id == 1) {
+            $proyectos = Proyecto::paginate(10);
+        } else {
+            // Si no es administrador, mostrar solo los proyectos terminados
+            $proyectos = Proyecto::where('terminado', 1)->paginate(10);
+        }
+    } else {
+        // Si no está autenticado, solo mostrar proyectos terminados
+        $proyectos = Proyecto::where('terminado', 1)->paginate(10);
     }
 
-    /**
-     * Mostrar un proyecto específico.
-     */
-    public function show($id)
+    // Retorna la vista con los proyectos
+    return view('proyectos.index', compact('proyectos'));
+}
+
+
+
+   public function show($id)
+{
+    // Busca el proyecto con las zonas sociales relacionadas
+    $proyecto = Proyecto::with('zonasCatalogo')->findOrFail($id);
+
+    // Asignación de datos del proyecto con valores predeterminados si es necesario
+    $proyecto->titulo       = $proyecto->nombre_pro;
+    $proyecto->descripcion  = $proyecto->descripcion ?? [];
+    $proyecto->precio       = $proyecto->precio ?? ['min' => null, 'max' => null];
+    $proyecto->area         = $proyecto->area ?? ['min' => null, 'max' => null];
+    $proyecto->direccion    = $proyecto->ubicacion_pro;
+    $proyecto->apartamentos = $proyecto->apartamentos ?? [];
+
+    // Genera el enlace del mapa con la dirección, asegurándose de codificar la URL correctamente
+    $proyecto->mapa         = 'https://www.google.com/maps?q=' . urlencode($proyecto->direccion) . '&output=embed';
+
+    // Retorna la vista con la información del proyecto
+    return view('proyectos.proyectos', compact('proyecto'));
+}
+public function create()
+{
+    // Obtener todos los estados disponibles
+    $estados = Estado::all();
+
+    // Obtener las zonas sociales
+    $zonas = ZonaCatalogo::all();
+
+    return view('admin.proyectos.crear', compact('zonas', 'estados'));
+}
+public function destroy($id)
+{
+    $proyecto = Proyecto::findOrFail($id);
+
+    // Eliminar imágenes del proyecto
+    //foreach ($proyecto->imagenes_pro ?? [] as $ruta) {
+       // $rutaCompleta = public_path($ruta);
+        //if (file_exists($rutaCompleta)) {
+           // unlink($rutaCompleta);
+      //  }
+   // }
+    
+    // Eliminar imágenes de apartamentos
+   //foreach ($proyecto->apartamentos ?? [] as $ruta) {
+        //$rutaCompleta = public_path($ruta);
+       // if (file_exists($rutaCompleta)) {
+           // unlink($rutaCompleta);
+       // }
+   // }
+    
+    // Desasociar zonas sociales
+    $proyecto->zonasCatalogo()->detach();
+    
+    // Eliminar el proyecto
+    $proyecto->delete();
+    
+    // Verifica si es una petición AJAX (fetch)
+    if (request()->expectsJson()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Proyecto eliminado correctamente.'
+        ]);
+    }
+    
+    // Petición normal (no fetch)
+    return redirect()->route('admin.proyectos.index')->with('success', 'Proyecto eliminado correctamente.');
+    
+}
+   public function edit($id)
     {
-        $proyecto = Proyecto::where('id_pro', $id)->firstOrFail();
+        // Obtener el proyecto por ID
+        $proyecto = Proyecto::findOrFail($id);
 
-        // Adaptar datos para la vista
-        $proyecto->titulo = $proyecto->nombre_pro;
-
-        $proyecto->imagenesHeader = is_string($proyecto->imagenes_pro)
-            ? json_decode($proyecto->imagenes_pro, true)
-            : $proyecto->imagenes_pro;
-
-        $proyecto->descripcion = explode("\n", $proyecto->descripcion);
-
-        $proyecto->precio = [
-            'min' => $proyecto->precio_min,
-            'max' => $proyecto->precio_max,
-        ];
-
-        $proyecto->area = [
-            'min' => $proyecto->area_min,
-            'max' => $proyecto->area_max,
-        ];
-
-        $proyecto->direccion = $proyecto->ubicacion_pro;
-
-        $proyecto->mapa = $proyecto->mapa ?: null;
-
-        $proyecto->zonas = [];
-        $proyecto->apartamentos = [];
-
-        return view('proyectos', compact('proyecto'));
+        // Pasar el proyecto a la vista de edición
+        return view('admin.proyectos.edit', compact('proyecto'));
     }
 
-    /**
-     * Mostrar formulario para crear un nuevo proyecto.
-     */
-    public function create()
+    // Actualizar un proyecto
+    public function update(Request $request, $id)
     {
-        return view('crear_proyecto');
-    }
-
-    /**
-     * Almacenar un nuevo proyecto en la base de datos.
-     */
-    public function store(Request $request)
-    {
+        // Validar los datos del formulario
         $request->validate([
-            'nombre_pro'       => 'required|string|max:255',
-            'descripcion'      => 'required|string',
-            'precio_min'       => 'required|numeric',
-            'precio_max'       => 'nullable|numeric',
-            'area_min'         => 'required|numeric',
-            'area_max'         => 'nullable|numeric',
-            'ubicacion_pro'    => 'required|string|max:255',
-            'imagenes_pro'     => 'nullable|array',
-            'imagenes_pro.*'   => 'url',
-            'id_tipo_permiso'  => 'required|exists:tipo_permisos,id_tipo',
+            'nombre_pro' => 'required|string|max:255',
+            'descripcion' => 'required|array', // Asegúrate de que es un array
+            'terminado' => 'required|boolean',
+            // Agrega otras validaciones según lo que necesites
         ]);
 
-        $direccion = $request->input('ubicacion_pro');
-        $mapaEmbedUrl = 'https://www.google.com/maps?q=' . urlencode($direccion) . '&output=embed';
+        // Obtener el proyecto a actualizar
+        $proyecto = Proyecto::findOrFail($id);
 
-        $proyecto = Proyecto::create([
-            'nombre_pro'      => $request->input('nombre_pro'),
-            'descripcion'     => $request->input('descripcion'),
-            'precio_min'      => $request->input('precio_min'),
-            'precio_max'      => $request->input('precio_max'),
-            'area_min'        => $request->input('area_min'),
-            'area_max'        => $request->input('area_max'),
-            'ubicacion_pro'   => $direccion,
-            'mapa'            => $mapaEmbedUrl,
-            'imagenes_pro'    => json_encode($request->input('imagenes_pro', [])),
-            'id_tipo_permiso' => $request->input('id_tipo_permiso'),
-        ]);
+        // Actualizar los campos del proyecto
+        $proyecto->nombre_pro = $request->input('nombre_pro');
+        $proyecto->descripcion = $request->input('descripcion'); // Asegúrate de que el formato sea correcto
+        $proyecto->terminado = $request->input('terminado');
+        
+        // Aquí puedes agregar otros campos para actualizar
 
-        return redirect()->route('proyecto.show', $proyecto->id_pro)
-                         ->with('success', 'Proyecto creado exitosamente');
+        // Guardar el proyecto actualizado
+        $proyecto->save();
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto actualizado correctamente.');
     }
+    public function toggle($id)
+{
+    $proyecto = Proyecto::find($id);
+
+    if (!$proyecto) {
+        return response()->json(['success' => false, 'message' => 'Proyecto no encontrado.']);
+    }
+
+    // Cambia el valor de 1 ↔ 0
+    $proyecto->terminado = $proyecto->terminado == 1 ? 0 : 1;
+    $proyecto->save();
+
+    return response()->json([
+        'success' => true,
+        'terminado' => $proyecto->terminado,
+        'message' => $proyecto->terminado ? 'Proyecto marcado como terminado.' : 'Proyecto marcado como en construcción.'
+    ]);
+}
+
+
+
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre_pro' => 'required|string|max:255',
+        'estado_id' => 'required|exists:estados,id_estado',
+        'imagenes_pro' => 'required|array',
+        'imagenes_pro.*' => 'image|mimes:jpeg,png,jpg,gif,svg',
+        'descripcion' => 'required|array',
+        'descripcion.*' => 'string|max:1000',
+        'zonas' => 'nullable|array',
+        'precio_min' => 'required|numeric',
+        'precio_max' => 'nullable|numeric',
+        'area_min' => 'required|numeric',
+        'area_max' => 'nullable|numeric',
+        'ubicacion_pro' => 'required|string|max:255',
+    ]);
+
+      $imagenesPro = [];
+    if ($request->hasFile('imagenes_pro')) {
+        foreach ($request->file('imagenes_pro') as $imagen) {
+            $nombreArchivo = time() . '_' . $imagen->getClientOriginalName();
+            $imagen->move(public_path('imagenes'), $nombreArchivo);
+            $imagenesPro[] = 'imagenes/' . $nombreArchivo;
+        }
+    }
+
+    // Guardar apartamentos en public/imagenes/apartamentos (si los hay)
+    $apartamentos = [];
+    if ($request->hasFile('apartamentos')) {
+        foreach ($request->file('apartamentos') as $apto) {
+            $nombreApto = time() . '_' . $apto->getClientOriginalName();
+            $apto->move(public_path('imagenes/apartamentos'), $nombreApto);
+            $apartamentos[] = 'imagenes/apartamentos/' . $nombreApto;
+        }
+    }
+    // Crear proyecto
+    $proyecto = Proyecto::create([
+        'nombre_pro'       => $request->input('nombre_pro'),
+        'tipo_pro'         => $request->input('tipo_pro'),
+        'descripcion'      => $request->input('descripcion'),
+        'precio'           => [
+            'min' => $request->input('precio_min'),
+            'max' => $request->input('precio_max'),
+        ],
+        'area'             => [
+            'min' => $request->input('area_min'),
+            'max' => $request->input('area_max'),
+        ],
+        'ubicacion_pro'    => $request->input('ubicacion_pro'),
+        'imagenes_pro'     => $imagenesPro,
+        'videos_pro'       => [], // aún no se usa
+        'apartamentos'     => $apartamentos,
+        'id_tipo_permiso'  => Auth::user()->tipo_permiso_id,
+        'terminado'        => 1,
+        'id_estado'        => $request->input('estado_id'),
+    ]);
+
+    // Asociar zonas sociales si las hay
+    if ($request->filled('zonas')) {
+        $proyecto->zonasCatalogo()->attach($request->input('zonas'));
+    }
+
+   return redirect()->route('proyectos.show', $proyecto->id_pro);
+
+                    
+}
 }

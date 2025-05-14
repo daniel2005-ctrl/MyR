@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const resetForm      = document.getElementById("resetForm");
   const passwordInput  = document.getElementById("password");
 
-  // CSRF
+  // CSRF Token
   const tokenMeta = document.querySelector('meta[name="csrf-token"]');
   const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : '';
 
@@ -109,11 +109,64 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ---- LOGIN ----
-  loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const formData = new FormData(loginForm);
+  // ---- LOGIN ----
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const formData = new FormData(loginForm);
 
-    fetch("/login", {
+  fetch("/login", {
+    method: "POST",
+    headers: {
+      ...(csrfToken && { "X-CSRF-TOKEN": csrfToken }),
+      "Accept": "application/json"
+    },
+    body: formData,
+    credentials: "include"
+  })
+  .then(res => res.json())
+  .then(data => {
+   if (data.success) {
+  // Guardamos el usuario y un mensaje en localStorage
+  localStorage.setItem("usuario", data.usuario);
+  localStorage.setItem("loginSuccess", "¡Has iniciado sesión correctamente!");
+
+  if (data.redirect) {
+    window.location.href = data.redirect;
+  } else {
+    cerrarModal();
+    mostrarMenuUsuario(data.usuario);
+  }
+
+
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: data.message,
+        confirmButtonColor: "#ff6600"
+      });
+    }
+  })
+  .catch(err => {
+    console.error("Error en login:", err);
+    Swal.fire({
+      icon: "error",
+      title: "Error inesperado",
+      text: "No se pudo conectar con el servidor.",
+      confirmButtonColor: "#ff6600"
+    });
+  });
+});
+
+
+
+
+  // ---- REGISTRO ----
+  registerForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(registerForm);
+
+    fetch("/register", {
       method: "POST",
       headers: {
         ...(csrfToken && { "X-CSRF-TOKEN": csrfToken }),
@@ -125,37 +178,25 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-
-        console.log("gdcgfdgfgfg", data);
-        // Si es admin, redirigimos al dashboard de admin
-        if (data.es_admin) {
-          window.location.href = "/admin";
-
-
-          return;
-        }
-
         Swal.fire({
           icon: "success",
-          title: "¡Bienvenido!",
-          text: `Hola ${data.usuario}, has iniciado sesión correctamente.`,
-          confirmButtonText: "Continuar"
+          title: "¡Registro exitoso!",
+          text: "Tu cuenta ha sido creada correctamente.",
+          confirmButtonText: "Iniciar sesión"
         }).then(() => {
-          localStorage.setItem("usuario", data.usuario);
-          cerrarModal();
-          mostrarMenuUsuario(data.usuario);
+          showSection(loginFormContainer);  // Mostrar el formulario de login
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Error al iniciar sesión",
+          title: "Error al registrar",
           text: data.message,
           confirmButtonColor: "#ff6600"
         });
       }
     })
     .catch(err => {
-      console.error("Error en login:", err);
+      console.error("Error en registro:", err);
       Swal.fire({
         icon: "error",
         title: "Error inesperado",
@@ -165,18 +206,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // ---- REGISTER ----
-  registerForm.addEventListener("submit", function (e) {
+  // ---- RECUPERACIÓN DE CONTRASEÑA ----
+  resetForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const btn = registerForm.querySelector("button[type='submit']");
-    btn.disabled = true;
+    const formData = new FormData(resetForm);
 
-    // Creamos FormData e incluimos el checkbox es_admin
-    const formData = new FormData(registerForm);
-    const esAdmin = registerForm.querySelector("input[name='es_admin']")?.checked ? 1 : 0;
-    formData.append('es_admin', esAdmin);
-
-    fetch("/register", {
+    fetch("/password/email", {
       method: "POST",
       headers: {
         ...(csrfToken && { "X-CSRF-TOKEN": csrfToken }),
@@ -190,87 +225,27 @@ document.addEventListener("DOMContentLoaded", function () {
       if (data.success) {
         Swal.fire({
           icon: "success",
-          title: "¡Registro exitoso!",
-          text: "Ahora puedes iniciar sesión.",
-          confirmButtonText: "Continuar"
-        }).then(() => {
-          cerrarModal();
-          registerForm.reset();
-          showSection(loginFormContainer);
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al registrar",
-          text: data.message,
-          confirmButtonText: "#ff6600"
-        });
-      }
-    })
-    .catch(err => {
-      console.error("Error en registro:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Error inesperado",
-        text: "No se pudo conectar con el servidor.",
-        confirmButtonText: "Intentar de nuevo"
-      });
-    })
-    .finally(() => {
-      btn.disabled = false;
-    });
-  });
-
-  // ---- RESET PASSWORD ----
-  resetForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const btn = resetForm.querySelector("button[type='submit']");
-    btn.disabled = true;
-
-    const email = resetForm.querySelector("input[name='email']").value;
-
-    fetch("/password/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(csrfToken && { "X-CSRF-TOKEN": csrfToken }),
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({ email }),
-      credentials: "include"
-    })
-    .then(async res => {
-      const data = await res.json();
-      if (res.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "¡Listo!",
-          text: data.status || "Revisa tu correo para el enlace de restablecimiento.",
-          confirmButtonText: "Continuar"
-        }).then(() => {
-          mostrarMenuUsuario(localStorage.getItem("usuario") || "");
-          showSection(loginFormContainer);
+          title: "¡Recuperación de contraseña!",
+          text: "Hemos enviado un enlace de recuperación a tu correo.",
+          confirmButtonText: "Aceptar"
         });
       } else {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: data.message || data.errors.email[0],
+          text: data.message,
           confirmButtonColor: "#ff6600"
         });
       }
     })
     .catch(err => {
-      console.error("Error en reset:", err);
+      console.error("Error en recuperación:", err);
       Swal.fire({
         icon: "error",
         title: "Error inesperado",
         text: "No se pudo conectar con el servidor.",
-        confirmButtonText: "Intentar de nuevo"
+        confirmButtonColor: "#ff6600"
       });
-    })
-    .finally(() => {
-      btn.disabled = false;
     });
   });
 
@@ -280,36 +255,48 @@ document.addEventListener("DOMContentLoaded", function () {
     modalOverlay.style.display = "none";
   }
 
-  // Menú de usuario
-  function mostrarMenuUsuario(usuario) {
-    loginButton.outerHTML = `
+ function mostrarMenuUsuario(usuario) {
+  const estaEnAdmin = document.getElementById('admin-page') !== null;
+
+  loginButton.outerHTML = `
     <div id="userMenu" class="user-container">
       <div id="userDropdown" class="user-dropdown">
         <span id="userIcon">👤 ${usuario}</span>
         <div id="dropdownContent" class="dropdown-content">
           <a href="/perfil">Editar Perfil</a>
+          ${estaEnAdmin ? '<a href="/admin">Panel de Administrador</a>' : ''}
           <a href="#" id="logoutButton">Cerrar Sesión</a>
         </div>
       </div>
     </div>`;
 
-    document.getElementById("userIcon").addEventListener("click", () => {
-      const dd = document.getElementById("dropdownContent");
-      dd.style.display = dd.style.display === "block" ? "none" : "block";
-    });
+  document.getElementById("userIcon").addEventListener("click", () => {
+    const dd = document.getElementById("dropdownContent");
+    dd.style.display = dd.style.display === "block" ? "none" : "block";
+  });
 
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      fetch("/logout", {
-        method: "POST",
-        headers: {
-          ...(csrfToken && { "X-CSRF-TOKEN": csrfToken }),
-          "Accept": "application/json"
-        },
-        credentials: "include"
-      }).then(() => {
+  // ✅ Solo este logout se necesita
+  document.getElementById("logoutButton").addEventListener("click", () => {
+    fetch("/custom-logout", {
+      method: "POST",
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+        "Accept": "application/json"
+      },
+      credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
         localStorage.removeItem("usuario");
-        window.location.reload();
-      });
+        window.location.href = data.redirect; // Redirección manual
+      } else {
+        console.error("Error al cerrar sesión");
+      }
+    })
+    .catch(err => {
+      console.error("Error en logout:", err);
     });
-  }
+  });
+}
 });

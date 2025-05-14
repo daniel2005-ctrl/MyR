@@ -12,72 +12,92 @@ use Illuminate\Auth\Events\PasswordReset;
 class AuthController extends Controller
 {
     // LOGIN via AJAX
-    public function login(Request $request)
+    // En App/Http/Controllers/AuthController.php
+
+public function login(Request $request)
 {
     $credentials = $request->only('email', 'password');
 
-    if (! Auth::attempt($credentials)) {
-        return response()->json(['success' => false, 'message' => 'Credenciales incorrectas.'], 401);
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+        $redirect = ($user->tipo_permiso_id == 1) ? '/admin' : '/';
+
+        return response()->json([
+            'success' => true,
+            'usuario' => $user->nombre, // o username
+            'redirect' => $redirect
+        ]);
     }
 
-    $user = Auth::user();
+    return redirect()->intended('/')->with('status', 'Has iniciado sesión correctamente.');
+
+
     return response()->json([
-        'success'  => true,
-        'usuario'  => $user->nombre,
-        'es_admin' => $user->tipo_permiso_id === 1,  // ← devuelve si es admin
-    ]);
-        
-        
-    }
+        'success' => false,
+        'message' => 'Credenciales incorrectas'
+    ], 401);
+}
+
+
+
 
     // REGISTER via AJAX
     public function register(Request $request)
     {
+        // Validación de datos
         $request->validate([
-            'nombre'    => 'required|string|max:255',
-            'email'     => 'required|string|email|max:255|unique:usuarios,email',
-            'password'  => 'required|string|min:6|confirmed',
-            'tipo_permiso_id'  => 'required|in:1,2',
-            // no hace falta validar es_admin, lo manejamos por lógica
+            'nombre'          => 'required|string|max:255',
+            'email'           => 'required|string|email|max:255|unique:usuarios,email',
+            'password'        => 'required|string|min:6|confirmed', // Contraseña debe ser confirmada
+            'tipo_permiso_id' => 'required|in:1,2', // Admin o Usuario normal
         ]);
-    
+
+        // Crear usuario
         Usuario::create([
             'nombre'          => $request->nombre,
             'email'           => $request->email,
-            'password'        => Hash::make($request->password),
-            'tipo_permiso_id' => $request->input('tipo_permiso_id', 2), // ← asigna admin o usuario normal
+            'password'        => Hash::make($request->password),  // Encriptación de la contraseña
+            'tipo_permiso_id' => $request->tipo_permiso_id, // Asignar tipo de permiso
         ]);
-    
-        return response()->json(['success' => true, 'message' => 'Usuario registrado exitosamente.']);
-    }
 
-    
-
-    // LOGOUT via AJAX
-    public function logout(Request $request)
-    {
-        Auth::logout();
         return response()->json([
             'success' => true,
-            'message' => 'Sesión cerrada correctamente.'
+            'message' => 'Usuario registrado exitosamente.',
         ]);
     }
 
-    // Mostrar vista de envío de enlace (no usado en AJAX)
+
+    // LOGOUT via AJAX
+public function logout(Request $request)
+{
+    // Cerrar sesión
+    Auth::logout();
+
+    // Invalidar y regenerar el token de sesión
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Redirigir al índice principal (o a cualquier otra ruta que prefieras)
+    return redirect()->route('proyectos.index'); // O la ruta principal que desees
+}
+
+
+    // Mostrar vista de envío de enlace de recuperación (no utilizado en AJAX)
     public function showLinkRequestForm()
     {
         return view('auth.passwords.email');
     }
 
-    // Enviar enlace de restablecimiento (soporta AJAX JSON)
+    // Enviar enlace de restablecimiento de contraseña (AJAX JSON)
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
+        // Respuesta JSON para AJAX
         if ($request->wantsJson()) {
             return $status === Password::RESET_LINK_SENT
                 ? response()->json(['message' => __($status)], 200)
@@ -94,28 +114,31 @@ class AuthController extends Controller
     {
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->email
+            'email' => $request->email,
         ]);
     }
 
     // Procesar restablecimiento de contraseña
     public function reset(Request $request)
     {
+        // Validación de datos
         $request->validate([
             'token'    => 'required',
             'email'    => 'required|email',
             'password' => 'required|confirmed|min:6',
         ]);
 
+        // Realizar el restablecimiento
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
-                $user->password = Hash::make($request->password);
+                $user->password = Hash::make($request->password); // Encriptar nueva contraseña
                 $user->save();
-                event(new PasswordReset($user));
+                event(new PasswordReset($user)); // Disparar el evento de PasswordReset
             }
         );
 
+        // Respuesta en JSON para AJAX
         if ($request->wantsJson()) {
             return $status === Password::PASSWORD_RESET
                 ? response()->json(['message' => 'Contraseña cambiada con éxito.'], 200)
@@ -123,7 +146,7 @@ class AuthController extends Controller
         }
 
         return $status === Password::PASSWORD_RESET
-    ? redirect()->route('home')->with('status', 'Contraseña cambiada con éxito.')
-    : back()->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('home')->with('status', 'Contraseña cambiada con éxito.')
+            : back()->withErrors(['email' => [__($status)]]);
     }
 }

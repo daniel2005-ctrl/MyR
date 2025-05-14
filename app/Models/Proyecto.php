@@ -9,46 +9,59 @@ class Proyecto extends Model
 {
     use HasFactory;
 
+    // Configuración de la tabla y clave primaria
     protected $table = 'proyectos';
-    protected $primaryKey = 'id_pro';     // ← tu clave primaria personalizada
+    protected $primaryKey = 'id_pro';
     public $incrementing = true;
     protected $keyType = 'int';
 
+    // Atributos que se pueden asignar masivamente
     protected $fillable = [
         'nombre_pro',
+        'tipo_pro',
         'descripcion',
-        'precio_min',
-        'precio_max',
-        'area_min',
-        'area_max',
+        'terminado',
+        'precio',
+        'area',
         'ubicacion_pro',
         'imagenes_pro',
         'videos_pro',
+        'apartamentos',
         'id_tipo_permiso',
+        'id_estado',
     ];
 
+    // Cast de los atributos a arrays cuando se obtienen de la base de datos
     protected $casts = [
-        'imagenes_pro' => 'array',
-        'videos_pro' => 'array',
+        'descripcion'      => 'array',
+        'precio'           => 'array',
+        'area'             => 'array',
+        'imagenes_pro'     => 'array',
+        'videos_pro'       => 'array',
+        'apartamentos'     => 'array',
     ];
 
-    public function getImagenesProAttribute($value)
+    // Relaciones
+    public function zonasCatalogo()
     {
-        return json_decode($value, true);
+        return $this->belongsToMany(
+            ZonaCatalogo::class,               // El modelo relacionado
+            'proyecto_zona_social',            // La tabla pivote
+            'proyecto_id',                     // Clave foránea de este modelo
+            'zona_catalogo_id'                 // Clave foránea del modelo relacionado
+        );
     }
 
-    public function setImagenesProAttribute($value)
+    public function tipoPermiso()
     {
-        $this->attributes['imagenes_pro'] = json_encode(is_array($value) ? $value : json_decode($value, true));
+        return $this->belongsTo(TipoPermiso::class, 'id_tipo_permiso', 'id_tipo');
     }
 
-    public function getVideosProAttribute($value)
-    {
-        return json_decode($value, true);
-    }
-
-    public function setVideosProAttribute($value)
-    {
-        $this->attributes['videos_pro'] = json_encode(is_array($value) ? $value : json_decode($value, true));
-    }
+    // En el modelo Proyecto
+public function estado()
+{
+    return $this->belongsTo(Estado::class, 'id_estado', 'id_estado');
 }
+
+}
+
