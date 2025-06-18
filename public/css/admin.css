@@ -177,8 +177,8 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover {
-    transform: scale(1.1);
+.card:hover:not(.no-zoom) {
+    /* transform: scale(1.1); - REMOVIDO */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -272,4 +272,258 @@ body {
 .card-footer a,
 .card-footer form {
     margin-top: 10px;
+}
+.btn-float-admin {
+    position: fixed;
+    bottom: 100px; /* <-- Subido para no tocar el footer */
+    right: 30px;
+    background-color: #ff6a00;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 28px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-float-admin:hover {
+    background-color: #ff6a00;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+  .logo, .logo_2 { width: 100px; top: 5px; left: 10px; }
+  .hero { height: 60vh; font-size: 1.2rem; }
+  .proyecto-container { flex-direction: column; gap: 10px; }
+  .card-img-top { height: 180px; }
+  /* Ajusta paddings, márgenes y tamaños de fuente según sea necesario */
+}
+/* Mejoras para las tarjetas de proyectos */
+.add-project-card {
+    border: 2px dashed #ff6a00 !important;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    transition: all 0.3s ease;
+}
+
+.add-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 106, 0, 1) !important;
+    border-color: #ff6a00 !important;
+}
+
+.proyecto-item {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.proyecto-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.proyecto-item:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+
+.card-img-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .card-title {
+        font-size: 0.85rem !important;
+    }
+    
+    .card-text {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (min-width: 1400px) {
+    .col-xl-2 {
+        flex: 0 0 auto;
+        width: 16.66666667%;
+    }
+}
+
+/* Animación suave para los badges */
+.badge {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}/* Mejoras para las tarjetas de proyectos */
+.add-project-card {
+    border: 2px dashed #ff6a00 !important;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    transition: all 0.3s ease;
+}
+
+.add-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 106, 0, 1)    !important;
+    border-color: #ff6a00 !important;
+}
+
+.proyecto-item {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.proyecto-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.proyecto-item:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.proyecto-inactivo .proyecto-item {
+    opacity: 0.7;
+}
+
+.card-img-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .card-title {
+        font-size: 0.85rem !important;
+    }
+    
+    .card-text {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (min-width: 1400px) {
+    .col-xl-2 {
+        flex: 0 0 auto;
+        width: 16.66666667%;
+    }
+}
+
+/* Animación suave para los badges */
+.badge {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+/* Mejoras para el dropdown de imagen destacada */
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    animation: fadeInDown 0.3s ease;
+    min-width: 250px;
+}
+
+.dropdown-item {
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    margin: 2px 4px;
+    padding: 8px 12px;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.dropdown-item:active {
+    background-color: #e9ecef;
+}
+
+.dropdown-item.processing {
+    opacity: 0.6;
+    pointer-events: none;
+    background-color: #e3f2fd;
+}
+
+.dropdown-item.processing::after {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+    border: 2px solid #ff6a00;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mejorar la visibilidad del botón dropdown */
+#dropdownMenuButton {
+    background-color: #ff6a00;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    transition: background 0.3s ease;
+}
+
+#dropdownMenuButton:hover {
+    background: rgba(255, 106, 0, 1)    ;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#dropdownMenuButton:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 106, 0, 1)    ;
 }

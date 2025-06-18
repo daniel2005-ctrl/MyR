@@ -47,6 +47,12 @@ return [
             'report' => false,
         ],
 
+        // Agregar esta configuración de Cloudinary
+        'cloudinary' => [
+            'driver' => 'cloudinary',
+            'url' => env('CLOUDINARY_URL'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

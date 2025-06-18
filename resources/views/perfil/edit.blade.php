@@ -35,7 +35,8 @@
             <div class="row justify-content-center mt-4">
                 <div class="col-md-8 border p-4 rounded bg-white shadow-sm">
                     <form method="POST" action="{{ route('perfil.update') }}">
-                        @csrf
+                         @csrf
+                         @method('PUT')  {{-- Esto es lo que faltaba --}}
 
                         <div class="mb-3">
                             <label for="nombre" class="form-label fw-bold">Nombre</label>

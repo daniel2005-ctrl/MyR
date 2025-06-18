@@ -21,7 +21,9 @@ return new class extends Migration
             $table->json('imagenes_header')->nullable();  // Campo para las imágenes del header
             $table->json('apartamentos')->nullable();  // Campo para almacenar imágenes de apartamentos
             $table->foreignId('id_tipo_permiso')->constrained('tipo_permisos');
+            $table->unsignedBigInteger('visitas')->default(0);
             $table->timestamps();
+            $table->unsignedBigInteger('visitas')->default(0);
         });
     }
     

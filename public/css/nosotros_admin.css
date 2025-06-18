@@ -1,0 +1,165 @@
+.section-box {
+    border: 2px solid #ddd; 
+    border-radius: 10px; 
+    padding: 1.5rem; 
+    margin-bottom: 2rem; 
+    position: relative; 
+    background: #fff; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-label { 
+    position: absolute; 
+    top: -0.9rem; 
+    left: 1rem; 
+    background-color: #fff; 
+    padding: 0 0.75rem; 
+    font-weight: bold; 
+    font-size: 0.85rem; 
+    color: #000; 
+    border: 2px solid #000; 
+    border-radius: 5px;
+}
+
+.section-title { 
+    background-color: #f90; 
+    padding: 0.4rem 1rem; 
+    display: inline-block; 
+    font-weight: bold; 
+    color: white; 
+    border-radius: 5px; 
+    margin-bottom: 1rem; 
+    font-size: 1.1rem;
+}
+
+.form-label { 
+    font-weight: bold; 
+    font-size: 1.1rem; 
+    margin-bottom: 0.5rem; 
+    display: block;
+}
+
+.preview-img { 
+    margin-top: 0.5rem; 
+    border-radius: 8px; 
+    border: 1px solid #ccc;
+}
+
+.btn-primary { 
+    background-color: #f90; 
+    border-color: #f90; 
+    font-weight: bold;
+}
+
+.btn-primary:hover { 
+    background-color: #d87d00; 
+    border-color: #d87d00;
+}
+
+/* Nuevos estilos para Cloudinary */
+.imagen-actual {
+    position: relative;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.btn-eliminar {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+    background: rgba(220, 53, 69, 1);
+}
+
+.imagenes-muestra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.imagen-muestra {
+    position: relative;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.imagen-muestra:hover {
+    border-color: #007bff;
+}
+
+.imagen-muestra img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.cloudinary-badge {
+    background: #3448c5;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Estilos para alertas */
+.alert {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Estilos para textarea de valores */
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .imagenes-muestra {
+        justify-content: center;
+    }
+    
+    .imagen-muestra img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .preview-img {
+        max-width: 100%;
+        height: auto;
+    }
+}

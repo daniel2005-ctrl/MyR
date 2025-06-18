@@ -23,3 +23,13 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+RewriteEngine On
+
+# Aumentar límites de Apache
+LimitRequestBody 104857600
+php_value post_max_size 100M
+php_value upload_max_filesize 50M
+php_value max_file_uploads 30
+php_value max_execution_time 600
+php_value max_input_time 600

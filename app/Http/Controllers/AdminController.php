@@ -9,11 +9,9 @@ class AdminController extends Controller
 {
     public function index()
     {
-        // Obtener todos los proyectos desde la base de datos
         $proyectos = Proyecto::all();
-
-        // Pasar la variable $proyectos a la vista
-        return view('admin.proyectos.index', compact('proyectos'));
+        $proyectoMasVisto = Proyecto::orderBy('visitas', 'desc')->first();
+        return view('admin.proyectos.index', compact('proyectos', 'proyectoMasVisto'));
     }
 
     public function crearProyecto()

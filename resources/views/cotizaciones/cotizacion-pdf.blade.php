@@ -2,142 +2,200 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotización de Vivienda y Parqueadero</title>
+    <title>Cotización del Proyecto</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 13px;
+            color: #333;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
+
         .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
         }
+
         .header {
-            text-align: center;
             margin-bottom: 30px;
         }
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 16px;
-            color: #777;
-        }
-        .section-title {
-            font-size: 20px;
-            color: #333;
-            margin-top: 20px;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-        }
-        .section-content {
-            font-size: 16px;
-            color: #555;
-            margin-top: 10px;
-        }
-        .section-content p {
-            margin: 5px 0;
-        }
-        .table {
+
+        .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
-        .table th, .table td {
-            padding: 12px;
+
+        .header-table td {
+            border: none;
+            padding: 0;
+            vertical-align: middle;
+        }
+
+        .header-table .title-cell {
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            width: 70%;
         }
-        .table th {
-            background-color: #f4f4f4;
+
+        .header-table .logo-cell {
+            text-align: right;
+            width: 30%;
         }
-        .table td {
+
+        .header h2 {
+            color: #ff6a00;
+            font-size: 26px;
+            margin: 0;
+        }
+
+        .header .logo {
+            width: 80px;
+            height: auto;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
             background-color: #fafafa;
         }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
+
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ff6a00;
+            border-bottom: 2px solid #ff6a00;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+        p {
+            margin: 6px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        table th {
+            background-color: #ff6a00;
+            color: white;
             font-size: 14px;
-            color: #777;
+        }
+
+        .resumen {
+            font-weight: bold;
+            font-size: 15px;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .condiciones {
+            margin-top: 35px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #aaa;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <h1>Cotización de Vivienda y Parqueadero</h1>
-            <p>Generada el {{ now()->format('d/m/Y') }}</p>
+            <table class="header-table">
+                <tr>
+                    <td class="title-cell">
+                        <h2>MYR Proyectos y Construcciones S.A.S</h2>
+                    </td>
+                    <td class="logo-cell">
+                        @if(file_exists(public_path('imagenes/Logos.png')))
+                            <img src="{{ public_path('imagenes/Logos.png') }}" alt="Logo MYR" class="logo">
+                        @else
+                            <span style="color: red;">Logo no encontrado</span>
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Vivienda</div>
+            <p><strong>Proyecto:</strong> {{ $nombreProyecto }}</p>
+            <p><strong>Valor Vivienda:</strong> {{ $valorVivienda }}</p>
+            <p><strong>Cuota Inicial:</strong> {{ $cuotaInicial }}</p>
+            <p><strong>Separación:</strong> {{ $separacion }}</p>
         </div>
 
-        <!-- Información de la Vivienda -->
-        <div class="section">
-            <div class="section-title">Detalles de la Vivienda</div>
-            <div class="section-content">
-                <p><strong>Valor Vivienda:</strong> {{ $valorVivienda }}</p>
-                <p><strong>Cuota Inicial:</strong> {{ $cuotaInicial }}</p>
-                <p><strong>Separación:</strong> {{ $separacion }}</p>
-            </div>
-        </div>
+        {{-- Condicional para mostrar parqueadero --}}
+        @php
+            $parqueaderoVisible = !empty($valorParqueadero) && $valorParqueadero !== '$ 0' && $valorParqueadero !== 0;
+        @endphp
 
-        <!-- Información del Parqueadero -->
-        <div class="section">
-            <div class="section-title">Detalles del Parqueadero</div>
-            <div class="section-content">
+        @if($parqueaderoVisible)
+            <div class="section">
+                <div class="section-title">Parqueadero</div>
                 <p><strong>Valor Parqueadero:</strong> {{ $valorParqueadero }}</p>
                 <p><strong>Cuota Inicial Parqueadero:</strong> {{ $cuotaInicialParqueadero }}</p>
                 <p><strong>Separación Parqueadero:</strong> {{ $separacionParqueadero }}</p>
             </div>
-        </div>
+        @endif
 
-        <!-- Tabla de Cuotas y Plazos -->
+        {{-- Total de Ahorros --}}
+        @isset($totalAhorros)
+            <div class="section">
+                <div class="section-title">Total de Ahorros</div>
+                <p><strong>Total Ahorros Aplicados:</strong> {{ $totalAhorros }}</p>
+            </div>
+        @endisset
+
         <div class="section">
-            <div class="section-title">Cuotas y Plazos</div>
-            <table class="table">
+            <div class="section-title">Cuota y Plazo</div>
+            <table>
                 <thead>
                     <tr>
-                        <th>Concepto</th>
-                        <th>Valor</th>
+                        <th>Plazo (meses)</th>
+                        <th>Cuota Mensual</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Plazo General</strong></td>
-                        <td>{{ $plazoGeneral }} meses</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Cuota Mensual General</strong></td>
+                        <td>{{ $plazoGeneral }}</td>
                         <td>{{ $cuotaMensualGeneral }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Condiciones Generales -->
-        <div class="section">
-            <div class="section-title">Condiciones Generales</div>
-            <div class="section-content">
-                <p>La cotización está sujeta a cambios según las condiciones del mercado y la disponibilidad de las propiedades. Los plazos y cuotas están calculados según los valores iniciales, y pueden variar según el tipo de financiamiento seleccionado.</p>
-            </div>
+        <div class="condiciones">
+            <h3>Condiciones Generales</h3>
+            <p>
+                La cotización está sujeta a cambios según las condiciones del mercado y la disponibilidad de las propiedades.
+                Los plazos y cuotas están calculados según los valores iniciales, y pueden variar según el tipo de cuota y plazo seleccionado.
+            </p>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             <p>Gracias por confiar en nosotros. Si tienes alguna pregunta, no dudes en contactarnos.</p>
-            <p>&copy; {{ now()->format('Y') }}. Todos los derechos reservados.</p>
+            <p>© 2025. Todos los derechos reservados.</p>
         </div>
     </div>
-
 </body>
 </html>

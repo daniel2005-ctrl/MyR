@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Usuario;
 
-
 class PerfilController extends Controller
 {
     public function edit()
@@ -38,9 +37,11 @@ class PerfilController extends Controller
             $usuario->password = Hash::make($request->password_nueva);
         }
 
-        /** @var \App\Models\Usuario $usuario */
-$usuario = Auth::user();
+
+        $usuario->save();
 
         return back()->with('mensaje', 'Perfil actualizado con éxito.');
     }
+
+
 }

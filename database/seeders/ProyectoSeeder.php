@@ -23,13 +23,13 @@ class ProyectoSeeder extends Seeder
             'area' => ['min' => 54.0, 'max' => 70.0],
             'ubicacion_pro' => 'Rincon de Varsovia, Carrera 2ª A Sur, Ibagué, Tolima',
             'imagenes_pro' => [
-                'imagenes/myr72/Fondo72.png',
-                'imagenes/myr72/proyecto1.png'
+                'imagenes/myr72/proyecto2.png',
+                'imagenes/myr72/proyecto3.png'
             ],
             'videos_pro' => [],
             'apartamentos' => [
-                'imagenes/myr72/apartamento2.png',
-                'imagenes/myr72/apartamento1.png', 
+                'imagenes/myr72/apartamento1.jpg',
+                'imagenes/myr72/apartamento2.jpg', 
             ],
             'id_tipo_permiso' => 1,
             'id_estado' => 2,
@@ -54,12 +54,12 @@ class ProyectoSeeder extends Seeder
             'ubicacion_pro' => 'Rincon de Varsovia, Carrera 2ª A Sur, Ibagué, Tolima',
             'imagenes_pro' => [
                 'imagenes/altos/Altos1.jpeg',
-                'imagenes/conocenos.png'
+                'imagenes/cocenos.png'
             ],
             'videos_pro' => [],
             'apartamentos' => [
-                'imagenes/myr72/apartamento2.png',
-                'imagenes/myr72/apartamento1.png',
+                'imagenes/myr72/apartamento1.jpg',
+                'imagenes/myr72/apartamento2.jpg',
             ],
             'id_tipo_permiso' => 1,
             'id_estado' => 1,
@@ -81,7 +81,7 @@ class ProyectoSeeder extends Seeder
             'area' => ['min' => 72.0, 'max' => 72.0],
             'ubicacion_pro' => 'Rincon de Varsovia, Carrera 2ª A Sur, Ibagué, Tolima',
             'imagenes_pro' => [
-                'imagenes/prados/Prado1.jpg',
+                'imagenes/prados/Prados1.jpg',
                 'imagenes/prados/Prados2.jpg'
             ],
             'videos_pro' => [],
@@ -107,7 +107,7 @@ class ProyectoSeeder extends Seeder
             'ubicacion_pro' => 'Rincon de Varsovia, Carrera 2ª A Sur, Ibagué, Tolima',
             'imagenes_pro' => [
                 'imagenes/rincon/Rincon1.jpeg',
-                'imagenes/rincon/Prados2.jpeg'
+                'imagenes/rincon/Rincon2.jpeg'
             ],
             'videos_pro' => [],
             'apartamentos' => [],

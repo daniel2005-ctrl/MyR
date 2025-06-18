@@ -7,7 +7,6 @@ class FormularioController extends Controller
 {
     public function store(Request $request)
     {
-    
         $request->validate([
             'nombre' => 'required|string|max:255',
             'telefono' => 'required|string|max:15',
@@ -15,7 +14,13 @@ class FormularioController extends Controller
             'proyecto' => 'required'
         ]);
 
-       
+        // Verificar si el email ya existe
+        $clienteExistente = Cliente::where('email', $request->correo)->first();
+        
+        if ($clienteExistente) {
+            return back()->with('info', 'Los datos ya han sido enviados anteriormente. Nos pondremos en contacto contigo pronto.')
+                        ->withInput();
+        }
 
         Cliente::create([
             'nombre' => $request->nombre,
@@ -25,8 +30,6 @@ class FormularioController extends Controller
             'fecha_envio' => now(),
         ]);
         
-    
-        // Aquí puedes guardar en base de datos, enviar correo, etc.
         return back()->with('success', 'Formulario enviado correctamente');
     }
 }

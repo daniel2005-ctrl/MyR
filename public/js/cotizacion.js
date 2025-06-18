@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const parqueaderoCard = document.getElementById('parqueaderoCard');
 
     const viviendaSelect = document.getElementById('vivienda');
+    const tipoApartamentoSelect = document.getElementById('tipoApartamento');
     const valorInput = document.getElementById('valor');
     const cuotaInicialInput = document.getElementById('cuota-inicial');
     const separacionInput = document.getElementById('separacion');
@@ -21,217 +22,359 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tieneAhorrosCheckbox = document.getElementById('tiene-ahorros');
     const campoAhorros = document.getElementById('campo-ahorros');
-    const inputAhorros = document.getElementById('total-ahorros'); // Asegúrate de que este id coincida
+    const inputAhorros = document.getElementById('total-ahorros');
 
     const plazoGeneral = document.getElementById('meses-modificable');
     const cuotaMensualGeneral = document.getElementById('cuota-mensual');
 
     let valorVivienda = 0;
-    let valorParqueadero = 15000000;
+    let valorParqueadero = 0;
+    let currentProject = null;
+    let currentApartmentType = null;
 
-    // Cambio de color del título
-    const titulo = document.getElementById('titulo');
-    if (titulo) {
-        titulo.style.color = '#ff8000';  // Cambio de color del título a #ff8000
+    // Get salary minimum from global variable
+    const salarioMinimo = window.salarioMinimo || 1300000;
+
+    // Subsidio/Credito toggle
+    if (subsidioCheckbox) {
+        subsidioCheckbox.addEventListener('change', () => {
+            if (infoSubsidio) infoSubsidio.classList.toggle('d-none', !subsidioCheckbox.checked);
+            if (infoCredito) infoCredito.classList.toggle('d-none', !subsidioCheckbox.checked);
+        });
     }
 
-    // Manejo del subsidio
-    subsidioCheckbox.addEventListener('change', () => {
-        infoSubsidio.style.display = subsidioCheckbox.checked ? 'block' : 'none';
-        infoCredito.style.display = subsidioCheckbox.checked ? 'block' : 'none';
-    });
+    // Parqueadero toggle
+    // En el event listener del switchParqueadero:
+    if (switchParqueadero) {
+        switchParqueadero.addEventListener('change', () => {
+            if (parqueaderoCard) {
+                if (switchParqueadero.checked) {
+                    parqueaderoCard.style.display = 'block';
+                    // Calcular valores automáticamente al mostrar la card
+                    calcularParqueadero();
+                } else {
+                    parqueaderoCard.style.display = 'none';
+                }
+            }
+        });
+    }
+    // Ahorros toggle
+    if (tieneAhorrosCheckbox && campoAhorros) {
+        tieneAhorrosCheckbox.addEventListener('change', () => {
+            campoAhorros.style.display = tieneAhorrosCheckbox.checked ? 'block' : 'none';
+            calcularCuotaMensual();
+        });
+    }
 
-    // Manejo del parqueadero
-    switchParqueadero.addEventListener('change', () => {
-        parqueaderoCard.style.display = switchParqueadero.checked ? 'block' : 'none';
-        if (switchParqueadero.checked) calcularParqueadero();
-    });
+    // Project selection
+    if (viviendaSelect) {
+        viviendaSelect.addEventListener('change', () => {
+            const selectedOption = viviendaSelect.options[viviendaSelect.selectedIndex];
+            const tipoApartamentoContainer = document.getElementById('tipoApartamentoContainer');
+            const parqueaderoContainer = document.getElementById('parqueaderoContainer');
+            
+            if (selectedOption.value) {
+                const precioMin = parseInt(selectedOption.getAttribute('data-precio-min')) || 0;
+                const precioMax = parseInt(selectedOption.getAttribute('data-precio-max')) || 0;
+                
+                // === DEBUG: AGREGAR ESTAS LÍNEAS ===
+                console.log('=== DEBUG PARQUEADERO ===');
+                console.log('Proyecto seleccionado:', selectedOption.getAttribute('data-nombre'));
+                console.log('data-parqueadero (raw):', selectedOption.getAttribute('data-parqueadero'));
+                console.log('Elemento parqueaderoContainer encontrado:', !!parqueaderoContainer);
+                // === FIN DEBUG ===
+                
+                currentProject = {
+                    id: selectedOption.value,
+                    nombre: selectedOption.getAttribute('data-nombre'),
+                    precioMin: precioMin,
+                    precioMax: precioMax,
+                    parqueadero: parseInt(selectedOption.getAttribute('data-parqueadero')) || 0
+                };
+                
+                // === DEBUG: AGREGAR ESTAS LÍNEAS ===
+                console.log('currentProject.parqueadero:', currentProject.parqueadero);
+                // === FIN DEBUG ===
+                
+                // Verificar si el proyecto tiene precio de parqueadero
+                const tieneParqueadero = currentProject.parqueadero > 0;
+                
+                // === DEBUG: AGREGAR ESTAS LÍNEAS ===
+                console.log('tieneParqueadero:', tieneParqueadero);
+                console.log('========================');
+                // === FIN DEBUG ===
+                
+                // Mostrar/ocultar sección de parqueadero
+                if (parqueaderoContainer) {
+                    parqueaderoContainer.style.display = tieneParqueadero ? 'block' : 'none';
+                    // === DEBUG: AGREGAR ESTA LÍNEA ===
+                    console.log('parqueaderoContainer.style.display:', parqueaderoContainer.style.display);
+                    // === FIN DEBUG ===
+                }
+                
+                // Si no hay parqueadero disponible, desmarcar el checkbox y ocultar la card
+                if (!tieneParqueadero && switchParqueadero) {
+                    switchParqueadero.checked = false;
+                    if (parqueaderoCard) {
+                        parqueaderoCard.style.display = 'none';
+                    }
+                }
+                
+                // Verificar si el proyecto tiene ambos tipos de apartamento
+                const tieneAmbosTipos = (precioMin > 0 && precioMax > 0 && precioMin !== precioMax);
+                
+                if (tieneAmbosTipos) {
+                    // Mostrar selector de tipo de apartamento
+                    if (tipoApartamentoContainer) {
+                        tipoApartamentoContainer.style.display = 'block';
+                    }
+                    if (tipoApartamentoSelect) {
+                        tipoApartamentoSelect.disabled = false;
+                        tipoApartamentoSelect.value = '';
+                    }
+                    currentApartmentType = null;
+                    clearViviendaInputs();
+                } else {
+                    // Ocultar selector y seleccionar automáticamente el tipo disponible
+                    if (tipoApartamentoContainer) {
+                        tipoApartamentoContainer.style.display = 'none';
+                    }
+                    
+                    // Determinar qué tipo usar automáticamente
+                    if (precioMin > 0) {
+                        currentApartmentType = 'min';
+                        if (tipoApartamentoSelect) {
+                            tipoApartamentoSelect.value = 'min';
+                        }
+                    } else if (precioMax > 0) {
+                        currentApartmentType = 'max';
+                        if (tipoApartamentoSelect) {
+                            tipoApartamentoSelect.value = 'max';
+                        }
+                    }
+                    
+                    // Calcular automáticamente
+                    calcularVivienda();
+                    if (switchParqueadero && switchParqueadero.checked) {
+                        calcularParqueadero();
+                    }
+                    calcularCuotaMensual();
+                }
+            } else {
+                currentProject = null;
+                currentApartmentType = null;
+                if (tipoApartamentoContainer) {
+                    tipoApartamentoContainer.style.display = 'none';
+                }
+                if (parqueaderoContainer) {
+                    parqueaderoContainer.style.display = 'none';
+                }
+                if (tipoApartamentoSelect) {
+                    tipoApartamentoSelect.disabled = true;
+                    tipoApartamentoSelect.value = '';
+                }
+                if (switchParqueadero) {
+                    switchParqueadero.checked = false;
+                    if (parqueaderoCard) {
+                        parqueaderoCard.style.display = 'none';
+                    }
+                }
+                clearViviendaInputs();
+            }
+        });
+    }
 
-    // Manejo de ahorros
-    tieneAhorrosCheckbox.addEventListener('change', () => {
-        campoAhorros.style.display = tieneAhorrosCheckbox.checked ? 'block' : 'none';
-        calcularCuotaMensual(); // Recálcular la cuota mensual cuando cambie la opción de ahorros
-    });
+    // Apartment type selection
+    if (tipoApartamentoSelect) {
+        tipoApartamentoSelect.addEventListener('change', () => {
+            if (currentProject && tipoApartamentoSelect.value) {
+                currentApartmentType = tipoApartamentoSelect.value;
+                calcularVivienda();
+                if (switchParqueadero && switchParqueadero.checked) {
+                    calcularParqueadero();
+                }
+                calcularCuotaMensual();
+            }
+        });
+    }
 
-    // Cambio de vivienda
-    viviendaSelect.addEventListener('change', () => {
-        const selectedOption = viviendaSelect.options[viviendaSelect.selectedIndex];
-        valorVivienda = parseInt(selectedOption.getAttribute('data-precio')) || 0;
+    // Plazo changes
+    if (plazoParqSelect) {
+        plazoParqSelect.addEventListener('change', () => {
+            if (switchParqueadero && switchParqueadero.checked) {
+                calcularParqueadero();
+            }
+        });
+    }
+    
+    if (plazoGeneral) {
+        plazoGeneral.addEventListener('change', calcularCuotaMensual);
+    }
+    
+    if (inputAhorros) {
+        inputAhorros.addEventListener('input', calcularCuotaMensual);
+    }
 
-        valorInput.value = formatCurrency(valorVivienda);
-
+    function calcularVivienda() {
+        if (!currentProject || !currentApartmentType) return;
+        
+        const precioEnSalarios = currentApartmentType === 'min' ? currentProject.precioMin : currentProject.precioMax;
+        valorVivienda = precioEnSalarios * salarioMinimo;
+        
+        if (valorInput) {
+            valorInput.value = formatCurrency(valorVivienda);
+        }
+        
         const cuotaInicial = valorVivienda * 0.30;
-        cuotaInicialInput.value = formatCurrency(cuotaInicial);
-
+        if (cuotaInicialInput) {
+            cuotaInicialInput.value = formatCurrency(cuotaInicial);
+        }
+        
         const separacion = cuotaInicial * 0.10;
-        separacionInput.value = formatCurrency(separacion);
+        if (separacionInput) {
+            separacionInput.value = formatCurrency(separacion);
+        }
+    }
 
-        calcularCuotaMensual();
-    });
-
-    // Cambio de plazo para parqueadero
-    plazoParqSelect.addEventListener('change', calcularParqueadero);
-    plazoGeneral.addEventListener('change', calcularCuotaMensual);
-
-    // Cálculo de la cuota mensual
-    inputAhorros.addEventListener('input', calcularCuotaMensual); // Asegurarse de que se actualice la cuota mensual al escribir en el campo de ahorros
+    function calcularParqueadero() {
+        if (!currentProject || !currentProject.parqueadero || currentProject.parqueadero === 0) return;
+        
+        // Calcular valor del parqueadero en pesos (SMMLV * salario mínimo)
+        valorParqueadero = currentProject.parqueadero * salarioMinimo;
+        
+        if (valorParqueaderoInput) {
+            valorParqueaderoInput.value = formatCurrency(valorParqueadero);
+        }
+        
+        const cuotaInicial = valorParqueadero * 0.30;
+        if (cuotaInicialParqInput) {
+            cuotaInicialParqInput.value = formatCurrency(cuotaInicial);
+        }
+        
+        const separacion = cuotaInicial * 0.10;
+        if (separacionParqInput) {
+            separacionParqInput.value = formatCurrency(separacion);
+        }
+        
+        const plazo = parseInt(plazoParqSelect?.value) || 36; // Default 36 meses
+        const cuotaMensual = (cuotaInicial * 0.90) / plazo;
+        if (cuotaMensualParqInput) {
+            cuotaMensualParqInput.value = formatCurrency(cuotaMensual);
+        }
+    }
 
     function calcularCuotaMensual() {
+        if (valorVivienda === 0) return;
+        
         const cuotaInicialBase = valorVivienda * 0.30;
         const separacion = cuotaInicialBase * 0.10;
-        const plazo = parseInt(plazoGeneral.value) || 1;
+        const plazo = parseInt(plazoGeneral?.value) || 1;
         
         let totalAhorros = 0;
-        if (tieneAhorrosCheckbox.checked) {
-            totalAhorros = parseInt(inputAhorros.value) || 0;  // Si los ahorros están activos, obtener su valor
+        if (tieneAhorrosCheckbox && tieneAhorrosCheckbox.checked) {
+            totalAhorros = parseInt(inputAhorros?.value) || 0;
         }
 
         let cuotaMensual;
-        if (tieneAhorrosCheckbox.checked) {
-            // Fórmula con ahorros activos
+        if (tieneAhorrosCheckbox && tieneAhorrosCheckbox.checked) {
             cuotaMensual = (cuotaInicialBase - totalAhorros + separacion) / plazo;
         } else {
-            // Fórmula sin ahorros
             cuotaMensual = (cuotaInicialBase + separacion) / plazo;
         }
 
-        cuotaMensualGeneral.value = formatCurrency(cuotaMensual);
+        if (cuotaMensualGeneral) {
+            cuotaMensualGeneral.value = formatCurrency(cuotaMensual);
+        }
     }
 
-    // Cálculo de la cuota del parqueadero
-    function calcularParqueadero() {
-        valorParqueaderoInput.value = formatCurrency(valorParqueadero);
-        const cuotaInicial = valorParqueadero * 0.30;
-        cuotaInicialParqInput.value = formatCurrency(cuotaInicial);
-        const separacion = cuotaInicial * 0.10;
-        separacionParqInput.value = formatCurrency(separacion);
-        const plazo = parseInt(plazoParqSelect.value) || 1;
-        const cuotaMensual = (cuotaInicial * 0.90) / plazo;
-        cuotaMensualParqInput.value = formatCurrency(cuotaMensual);
+    function clearViviendaInputs() {
+        if (valorInput) valorInput.value = '';
+        if (cuotaInicialInput) cuotaInicialInput.value = '';
+        if (separacionInput) separacionInput.value = '';
+        if (cuotaMensualGeneral) cuotaMensualGeneral.value = '';
+        valorVivienda = 0;
+        currentApartmentType = null;
     }
 
-    // Formateo de la moneda
     function formatCurrency(valor) {
         return valor.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
     }
 
-    // Manejo de la creación del PDF
-    btnImprimirPDF.addEventListener("click", async function () {
-        // Cambiar color del botón a blanco cuando se hace clic
-        btnImprimirPDF.style.backgroundColor = "#ffffff";
-        btnImprimirPDF.style.color = "#ff8000";
+    // PDF Generation with dompdf instead of jsPDF
+    if (btnImprimirPDF) {
+        btnImprimirPDF.addEventListener("click", function () {
+            // Verificar que hay datos para generar el PDF
+            if (!currentProject || !currentProject.id) {
+                alert('Por favor selecciona un proyecto antes de generar el PDF.');
+                return;
+            }
+    
+            const tipoApartamento = document.getElementById('tipoApartamento')?.value;
+            if (!tipoApartamento) {
+                alert('Por favor selecciona un tipo de apartamento antes de generar el PDF.');
+                return;
+            }
+    
+            // Deshabilitar el botón temporalmente
+            btnImprimirPDF.disabled = true;
+    
+            // En lugar de document.getElementById('formPDF').submit();
+            
+            // Crear FormData con los datos del formulario
+            const formData = new FormData();
+            formData.append('nombre_proyecto', currentProject.nombre || '');
+            formData.append('valor_vivienda', document.getElementById('valor').value || '0');
+            formData.append('cuota_inicial', document.getElementById('cuota-inicial').value || '0');
+            formData.append('separacion', document.getElementById('separacion').value || '0');
+            formData.append('valor_parqueadero', document.getElementById('valorParqueadero').value || '0');
+            formData.append('cuota_inicial_parq', document.getElementById('cuotaInicialParqueadero').value || '0');
+            formData.append('separacion_parq', document.getElementById('separacionParqueadero').value || '0');
+            formData.append('plazo_general', document.getElementById('meses-modificable').value || '36');
+            formData.append('cuota_mensual_general', document.getElementById('cuota-mensual').value || '0');
+            formData.append('total_ahorros', document.getElementById('total-ahorros')?.value || '0');
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+      
 
-        // Deshabilitar el botón para evitar clics múltiples
-        btnImprimirPDF.disabled = true;
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        let startX = 20;
-        let startY = 20;
-        const rowHeight = 10;
-        const columnWidth = [80, 80];
-
-        function dibujarTabla(titulo, datos) {
-            doc.setFontSize(14);
-            doc.setTextColor(0, 0, 0);
-            doc.text(titulo, startX, startY);
-            startY += 5;
-
-            doc.setFontSize(12);
-            doc.setFillColor(255, 128, 0);
-            doc.setTextColor(255, 255, 255);
-            datos[0].forEach((text, i) => {
-                doc.rect(startX + i * columnWidth[i], startY, columnWidth[i], rowHeight, 'FD');
-                doc.text(text, startX + i * columnWidth[i] + 5, startY + 7);
+            
+            // Enviar con fetch
+            fetch('/generar-pdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                // Crear URL del blob y descargar
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'cotizacion_proyecto.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Error al generar PDF:', error);
+                alert('Error al generar el PDF. Por favor, inténtalo de nuevo.');
+            })
+            .finally(() => {
+                // Restaurar el botón
+                setTimeout(() => {
+                    btnImprimirPDF.style.backgroundColor = "#ff8000";
+                    btnImprimirPDF.style.color = "white";
+                    btnImprimirPDF.disabled = false;
+                }, 2000);
             });
-
-            doc.setTextColor(0, 0, 0);
-            datos.slice(1).forEach((fila, idx) => {
-                fila.forEach((cell, i) => {
-                    doc.rect(startX + i * columnWidth[i], startY + rowHeight * (idx + 1), columnWidth[i], rowHeight);
-                    doc.text(cell, startX + i * columnWidth[i] + 5, startY + rowHeight * (idx + 1) + 7);
-                });
-            });
-
-            startY += rowHeight * (datos.length);
-            startY += 10;
-        }
-
-        // 🏢 Encabezado con nombre de la constructora, fecha y hora
-        // Encabezado con nombre y logo
-        doc.setFontSize(18);
-        doc.setTextColor(255, 128, 0);
-        doc.text("MYR Proyectos y Construcciones", 20, startY);
-
-        // Agrega el logo a la derecha del nombre
-        try {
-            const imageBase64 = await toBase64('/imagenes/logos.png'); // Ruta del logo
-            doc.addImage(imageBase64, 'PNG', 130, startY - 6, 50, 25); // Ajusta posición y tamaño
-        } catch (error) {
-            console.error("Error cargando imagen del encabezado:", error);
-        }
-
-        startY += 15;
-
-        // Fecha y hora debajo
-        const fechaHora = new Date().toLocaleString('es-CO', { hour12: false });
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Fecha y Hora: ${fechaHora}`, 20, startY);
-        startY += 15;
-
-        // Línea de separación
-        doc.setDrawColor(255, 128, 0);
-        doc.line(20, startY, 190, startY);
-        startY += 5;
-
-        const proyectoSeleccionado = viviendaSelect.options[viviendaSelect.selectedIndex]?.text || "No seleccionado";
-
-        // 🏠 Tabla de Vivienda
-        dibujarTabla('Detalles de la Vivienda', [
-            ['Descripción', 'Valor'],
-            [`Proyecto: ${proyectoSeleccionado}`, valorInput.value],
-            ['Cuota Inicial', cuotaInicialInput.value],
-            ['Separación', separacionInput.value]
-        ]);
-
-        // 🚗 Tabla de Parqueadero (con plazo y cuota)
-        if (switchParqueadero.checked) {
-            dibujarTabla('Detalles del Parqueadero', [
-                ['Descripción', 'Valor'],
-                ['Valor Parqueadero', valorParqueaderoInput.value],
-                ['Cuota Inicial Parqueadero', cuotaInicialParqInput.value],
-                ['Separación Parqueadero', separacionParqInput.value],
-                [`Plazo: ${plazoParqSelect.value} meses`, `Cuota Mensual: ${cuotaMensualParqInput.value}`]
-            ]);
-        }
-
-        // 💰 Ahorros
-        const tieneAhorros = tieneAhorrosCheckbox.checked ? "Sí" : "No";
-        const valorAhorros = inputAhorros.value || "0";  // Captura el valor correctamente
-
-        dibujarTabla('Información sobre Ahorros', [
-            ['¿Tiene ahorros?', 'Valor de los ahorros'],
-            [tieneAhorros, formatCurrency(parseInt(valorAhorros) || 0)]  // Muestra el valor correctamente
-        ]);
-
-        // 💳 Financiamiento General
-        dibujarTabla('Resumen de Financiamiento', [
-            ['Plazo', 'Cuota Mensual'],
-            [`${plazoGeneral.value} meses`, cuotaMensualGeneral.value]
-        ]);
-
-        // Generar el PDF
-        doc.save("cotización_proyecto.pdf");
-
-        // Restaurar el estado original del botón después de 1 segundo
-        setTimeout(() => {
-            btnImprimirPDF.style.backgroundColor = "#ff8000"; // Regresa al color original
-            btnImprimirPDF.style.color = "white"; // Regresa al color de texto original
-            btnImprimirPDF.disabled = false; // Habilitar el botón nuevamente
-        }, 1000); // Esto se ejecuta después de 1 segundo, suficiente para que el PDF se descargue
-    });
+    
+            // Restaurar el botón después de un breve delay
+            setTimeout(() => {
+                btnImprimirPDF.style.backgroundColor = "#ff8000";
+                btnImprimirPDF.style.color = "white";
+                btnImprimirPDF.disabled = false;
+            }, 2000);
+        });
+    }
 
     // Función para convertir imagen a Base64
     function toBase64(url) {
@@ -244,4 +387,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 reader.readAsDataURL(blob);
             }));
     }
+
+    // Form submission functionality
+    function submitCotizacion() {
+        if (!currentProject || !currentApartmentType) {
+            alert('Por favor selecciona un proyecto y tipo de apartamento');
+            return;
+        }
+        
+        const formData = {
+            proyecto_id: currentProject.id,
+            tipo_apto: currentApartmentType,
+            incluye_parqueadero: switchParqueadero ? (switchParqueadero.checked ? 1 : 0) : 0
+        };
+        
+        console.log('Datos a enviar:', formData);
+        // Aquí puedes agregar la lógica para enviar al servidor
+    }
+
+   
 });
+
+// Actualizar la lógica para mostrar/ocultar el parqueadero:
+const tieneParqueadero = currentProject.parqueadero > 0;
+// En el event listener del proyecto, después de mostrar el parqueaderoContainer:
+if (tieneParqueadero) {
+    parqueaderoContainer.style.display = 'block';
+    // Calcular automáticamente los valores del parqueadero
+    calcularParqueadero();
+} else {
+    parqueaderoContainer.style.display = 'none';
+    switchParqueadero.checked = false;
+    if (parqueaderoCard) {
+        parqueaderoCard.style.display = 'none';
+    }
+}

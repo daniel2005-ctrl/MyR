@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class RedSocial extends Model
 {
-    protected $fillable = ['nombre', 'url', 'icono'];
+     protected $fillable = ['nombre', 'icono', 'url'];
 }

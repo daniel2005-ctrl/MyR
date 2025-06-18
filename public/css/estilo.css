@@ -1,4 +1,15 @@
-/* Reset básico */
+/* Variables CSS para evitar repetición */
+:root {
+    --color-primary: #ff6a00;
+    --color-primary-hover: #e55b00;
+    --border-radius: 5px;
+    --border-radius-lg: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.2);
+    --transition: 0.3s ease;
+}
+
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +25,7 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Logo principal */
+/* Logos */
 .logo {
     width: 150px;
     height: auto;
@@ -23,7 +34,6 @@ body {
     right: 20px;
 }
 
-/* Segundo logo */
 .logo_2 {
     width: 460px;
     height: auto;
@@ -70,22 +80,26 @@ body {
     margin-bottom: 20px;
 }
 
-/* Botones */
-.btn-primary {
-    background-color: #ff6a00;
+/* Botones consolidados */
+.btn-primary,
+.btn-warning,
+.btn-submit {
+    background-color: var(--color-primary);
+    color: white;
     border: none;
+    border-radius: var(--border-radius);
+    transition: background var(--transition);
     padding: 10px 20px;
     font-size: 1.1rem;
-    transition: background 0.3s ease;
 }
 
-.btn-warning {
-    background-color: #ff6a00;
-    color: white;
+.btn-submit {
+    width: 100%;
 }
 
-.btn-primary:hover {
-    background-color: #e55b00;
+.btn-primary:hover,
+.btn-submit:hover {
+    background-color: var(--color-primary-hover);
 }
 
 /* Sección Proyectos */
@@ -104,10 +118,10 @@ body {
     max-width: 300px;
     text-align: center;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow);
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: transform var(--transition);
 }
 
 .proyecto:hover {
@@ -116,7 +130,7 @@ body {
 
 .proyecto img {
     width: 100%;
-    border-bottom: 2px solid #ff6a00;
+    border-bottom: 2px solid var(--color-primary);
 }
 
 /* Sección Contacto */
@@ -140,8 +154,8 @@ body {
     margin: auto;
     background: #f9f9f9;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow);
 }
 
 .form-group input,
@@ -150,93 +164,144 @@ body {
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 10px;
-    background-color: #ff6a00;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-}
-
-.btn-submit:hover {
-    background-color: #e55b00;
+    border-radius: var(--border-radius);
 }
 
 /* Card animación */
 .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .card:hover {
     transform: scale(1.1);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow-hover);
 }
 
-/* Sección Contacto */
+/* Sección Contacto - Responsive (consolidado) */
 #contacto {
     position: relative;
     padding: 40px 0;
 }
 
+#contacto .container {
+    max-width: 1200px;
+}
+
+#contacto .row {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 30px;
+    flex-wrap: nowrap !important;
+}
+
+/* Contenedor del formulario */
+.contenedor-formulario {
+    flex: 0 0 40% !important;
+    min-width: 400px;
+    margin-bottom: 0;
+}
+
+.contenedor-formulario .formulario {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.contenedor-formulario iframe {
+    width: 100%;
+    max-width: 500px;
+    height: 500px;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow);
+}
+
 /* Carrusel */
 .carrusel-container {
-    position: absolute;
-    left: 780px;
-    bottom: 0;
-    width: 700px;
-    height: 545px;
+    width: 100%;
+    flex: 0 0 55% !important;
+    min-width: 500px;
+    height: 500px;
+    margin: 0;
     perspective: 800px;
     overflow: hidden;
 }
 
 #carouselProyectos {
     width: 100%;
-    height: 88%;
-}
-
-.carousel-inner {
-    position: relative;
-    width: 100%;
     height: 100%;
-    transform-style: preserve-3d;
-}
-
-.carousel-item {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-    backface-visibility: hidden;
-}
-
-.carousel-item.active {
-    opacity: 1;
-    transform: rotateY(0deg);
-}
-
-.carousel-item-next {
-    transform: rotateY(90deg);
-}
-
-.carousel-item-prev {
-    transform: rotateY(-90deg);
-}
-
-.carousel-fade .carousel-item {
-    transition: opacity 1s ease-in-out;
 }
 
 .carousel-item img {
     object-fit: cover;
     height: 500px;
+    width: 100%;
 }
 
+/* Media queries consolidadas */
+@media (min-width: 768px) {
+    .contenedor-formulario {
+        flex: 0 0 40% !important;
+        margin-bottom: 0;
+    }
+    
+    .carrusel-container {
+        flex: 0 0 55% !important;
+        height: 500px;
+    }
+}
+
+@media (min-width: 992px) {
+    #contacto .row {
+        gap: 40px;
+    }
+    
+    .contenedor-formulario {
+        flex: 0 0 35% !important;
+    }
+    
+    .carrusel-container {
+        flex: 0 0 60% !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .carrusel-container {
+        height: 545px;
+    }
+    
+    .contenedor-formulario iframe {
+        height: 545px;
+    }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+    #contacto .row {
+        flex-wrap: wrap !important;
+        flex-direction: column;
+    }
+    
+    .contenedor-formulario {
+        flex: 1 1 100% !important;
+        margin-bottom: 30px;
+    }
+    
+    .contenedor-formulario iframe {
+        height: 400px;
+    }
+    
+    .carrusel-container {
+        flex: 1 1 100% !important;
+        height: 300px;
+    }
+    
+    .carousel-item img {
+        height: 300px;
+    }
+}
+
+/* Animaciones */
 .animate-caption {
     animation: fadeInUp 1s ease-in-out;
 }
@@ -252,12 +317,12 @@ body {
     }
 }
 
+/* Utilidades */
 .border_warning {
-    border: 10px solid #ff6a00;
+    border: 10px solid var(--color-primary);
     border-radius: 10px;
     border-width: 50px !important;
 }
-
 
 .estado-bandera {
     position: absolute;
@@ -273,5 +338,367 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+/* Estilos para el botón de toggle de filtros */
+.btn-filter-toggle {
+    background: linear-gradient(45deg, #ff6600, #ff8533);
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
 
-/* Usa las clases bg-warning y bg-success de Bootstrap para el color */
+.btn-filter-toggle:hover {
+    background: linear-gradient(45deg, #e55a00, #ff6600);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
+}
+
+.btn-filter-toggle i {
+    margin-right: 5px;
+}
+
+
+/* Estilos para el panel de filtros colapsible */
+.filter-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+    opacity: 0;
+    margin-bottom: 0;
+}
+
+.filter-panel.show {
+    max-height: 800px; /* Aumentado de 500px a 800px */
+    overflow: visible; /* Cambiado de hidden a visible */
+    opacity: 1;
+    margin-bottom: 30px;
+}
+
+/* Estilos para la sección de filtros */
+.filter-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #ff6600;
+}
+
+.filter-title {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-label {
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.btn-filter {
+    background: linear-gradient(45deg, #ff6600, #ff8533);
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-filter:hover {
+    background: linear-gradient(45deg, #e55a00, #ff6600);
+    color: white;
+}
+
+.btn-clear {
+    background: #6c757d;
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 10px 25px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.active-filters {
+    margin-top: 15px;
+}
+
+.filter-tag {
+    display: inline-block;
+    background: #ff6600;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    margin: 2px;
+}
+
+/* Estilos para las etiquetas de tipo de proyecto */
+.proyecto-tipo-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+.proyecto-tipo-badge .badge {
+    font-size: 0.75em;
+    padding: 5px 8px;
+}
+
+/* Estilos para proyectos sin zonas sociales */
+.sin-zonas-sociales {
+    font-style: italic;
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+/* Responsive para filtros */
+@media (max-width: 768px) {
+    .filter-section {
+        padding: 15px;
+    }
+    
+    .filter-group {
+        margin-bottom: 10px;
+    }
+    
+    .btn-filter,
+    .btn-clear {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .btn-filter-toggle {
+        font-size: 0.8em;
+        padding: 6px 15px;
+    }
+    
+    .filter-panel.show {
+        max-height: 600px;
+    }
+}
+
+/* Animación suave para el icono del botón */
+.btn-filter-toggle.active i {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* Estilos para select múltiple de zonas sociales */
+.filter-group select[multiple] {
+    min-height: 100px;
+    padding: 8px;
+}
+
+.filter-group select[multiple] option {
+    padding: 4px 8px;
+    margin: 1px 0;
+}
+
+.filter-group select[multiple] option:checked {
+    background-color: #007bff;
+    color: white;
+}
+
+.filter-group small.text-muted {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Estilos para dropdown de zonas sociales */
+/* Estilos para dropdown de zonas sociales */
+.dropdown-item-check {
+    padding: 8px 16px;
+    margin: 0;
+}
+
+.dropdown-item-check:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item-check .form-check-input {
+    margin-right: 8px;
+}
+
+.dropdown-item-check .form-check-label {
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.dropdown-menu {
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1050;
+}
+
+/* Evitar que el dropdown se cierre al hacer click en los checkboxes */
+.dropdown-menu .dropdown-item-check {
+    cursor: default;
+}
+
+.dropdown-menu .dropdown-item-check:active {
+    background-color: transparent;
+}
+
+/* Estilos para el botón del dropdown */
+.filter-group .dropdown-toggle {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-group .dropdown-toggle::after {
+    margin-left: auto;
+}
+
+.filter-group .dropdown-toggle::after {
+    margin-left: auto;
+} para proyectos sin zonas sociales */
+    .sin-zonas-sociales {
+        font-style: italic;
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+    
+    /* Responsive para filtros */
+    @media (max-width: 768px) {
+        .filter-section {
+            padding: 15px;
+        }
+        
+        .filter-group {
+            margin-bottom: 10px;
+        }
+        
+        .btn-filter,
+        .btn-clear {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn-filter-toggle {
+            font-size: 0.8em;
+            padding: 6px 15px;
+        }
+        
+        .filter-panel.show {
+            max-height: 600px;
+        }
+    }
+    
+    /* Animación suave para el icono del botón */
+    .btn-filter-toggle.active i {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
+    
+    /* Estilos para select múltiple de zonas sociales */
+    .filter-group select[multiple] {
+        min-height: 100px;
+        padding: 8px;
+    }
+    
+    .filter-group select[multiple] option {
+        padding: 4px 8px;
+        margin: 1px 0;
+    }
+    
+    .filter-group select[multiple] option:checked {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .filter-group small.text-muted {
+        font-size: 0.75rem;
+        margin-top: 4px;
+        display: block;
+    }
+    
+    .filter-group {
+        margin-bottom: 15px;
+    }
+    
+    .filter-label {
+        font-weight: 500;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .btn-filter {
+        background: linear-gradient(45deg, #ff6600, #ff8533);
+        border: none;
+        color: white;
+        font-weight: 500;
+        padding: 10px 25px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-filter:hover {
+        background: linear-gradient(45deg, #e55a00, #ff6600);
+        color: white;
+    }
+    
+    .btn-clear {
+        background: #6c757d;
+        border: none;
+        color: white;
+        font-weight: 500;
+        padding: 10px 25px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-clear:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .active-filters {
+        margin-top: 15px;
+    }
+    
+    .filter-tag {
+        display: inline-block;
+        background: #ff6600;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.85em;
+        margin: 2px;
+    }
+    
+    /* Estilos para las etiquetas de tipo de proyecto */
+    .proyecto-tipo-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+    }
+    
+    .proyecto-tipo-badge .badge {
+        font-size: 0.75em;
+        padding: 5px 8px;
+    }
+    
+    /* Estilos

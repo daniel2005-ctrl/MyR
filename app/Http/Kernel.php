@@ -4,6 +4,8 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\IsAdmin;
+use Illuminate\Console\Scheduling\Schedule;
+
 
 class Kernel extends HttpKernel
 {
@@ -37,5 +39,18 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        
+
     ];
+protected $commands = [
+    \App\Console\Commands\ActualizarSalarioMinimo::class,
+];
+
+
+protected function schedule(Schedule $schedule)
+{
+    $schedule->command('app:actualizar-salario-minimo')->weekly();
+}
+
+
 }

@@ -16,29 +16,27 @@
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
 
     @stack('styles')
-        <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <body id="admin-page">
-
+<body id="admin-page">
 
     {{-- Aquí más adelante incluirás el navbar exclusivo del admin --}}
     @include ('partials.navbar')
 
     {{-- Contenido principal --}}
     <main class="m-0 p-0">
-
         @yield('content')
     </main>
 
     {{-- Footer editable --}}
-    @include('partials.footer')
+   @include('partials.footer')
 
     {{-- Scripts --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/codigo_seguridad.js') }}"></script>
     <script src="{{ asset('js/inicio.js') }}"></script>
+    <script src="{{ asset('js/proyectos-index.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

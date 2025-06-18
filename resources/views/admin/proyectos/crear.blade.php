@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/crear.css') }}">
 @endpush
@@ -12,10 +13,20 @@
     <form action="{{ route('proyectos.store') }}" method="POST" enctype="multipart/form-data" class="mt-4">
         @csrf
 
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Estado del proyecto -->
         <div class="mb-4">
             <label for="estado_proyecto" class="form-label fw-bold">Estado del proyecto</label>
-            <select name="estado_id" id="estado_proyecto" class="form-select" required>
+            <select name="id_estado" id="estado_proyecto" class="form-select" required>
                 <option value="">Seleccione una opción</option>
                 @foreach ($estados as $estado)
                     <option value="{{ $estado->id_estado }}">{{ $estado->nombre_estado }}</option>
@@ -33,6 +44,20 @@
         <div class="mb-4">
             <label class="form-label fw-bold">Imágenes del proyecto</label>
             <input type="file" name="imagenes_pro[]" class="form-control" accept="image/*" multiple required>
+        </div>
+
+        <!-- Imagen de portada -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">Imagen de portada</label>
+            <input type="file" name="imagenes_header" class="form-control" accept="image/*" required>
+            <small class="form-text text-muted">Esta imagen se mostrará como portada principal del proyecto en la página de inicio.</small>
+        </div>
+
+        <!-- Videos del proyecto -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">Videos del proyecto</label>
+            <input type="file" name="videos_pro[]" class="form-control" accept="video/*" multiple>
+            <small class="form-text text-muted">Formatos soportados: MP4, AVI, MOV. Opcional.</small>
         </div>
 
         <!-- Descripción -->
@@ -67,11 +92,11 @@
         <!-- Precio -->
         <div class="row mb-4">
             <div class="col-md-6">
-                <label class="form-label">Precio mínimo</label>
+                <label class="form-label">Precio apto 1</label>
                 <input type="number" name="precio_min" step="0.01" class="form-control" required>
             </div>
             <div class="col-md-6">
-                <label class="form-label">Precio máximo</label>
+                <label class="form-label">Precio  apto 2</label>
                 <input type="number" name="precio_max" step="0.01" class="form-control">
             </div>
         </div>
@@ -79,13 +104,20 @@
         <!-- Área -->
         <div class="row mb-4">
             <div class="col-md-6">
-                <label class="form-label">Área mínima (m²)</label>
+                <label class="form-label">Área apto 1 (m²)</label>
                 <input type="number" name="area_min" step="0.01" class="form-control" required>
             </div>
             <div class="col-md-6">
-                <label class="form-label">Área máxima (m²)</label>
+                <label class="form-label">Área apto 2 (m²)</label>
                 <input type="number" name="area_max" step="0.01" class="form-control">
             </div>
+        </div>
+
+        <!-- Parqueadero -->
+        <div class="mb-4">
+            <label class="form-label fw-bold">Precio del parqueadero (SMMLV)</label>
+            <input type="number" name="parqueadero" step="0.01" class="form-control" placeholder="Ej: 3.5">
+            <small class="form-text text-muted">Precio en Salarios Mínimos Mensuales Legales Vigentes. Dejar vacío si no aplica.</small>
         </div>
 
         <!-- Tipos de apartamento -->
@@ -102,24 +134,24 @@
                 <iframe src="https://www.google.com/maps?q=Bogotá&output=embed" width="100%" height="300" style="border:0;"></iframe>
             </div>
         </div>
+
         <!-- Tipo de vivienda (VIS, No VIS, VIP) -->
-<div class="mb-4">
-    <label class="form-label fw-bold">Tipo de Vivienda</label>
-    <select name="tipo_pro" class="form-select" required>
-        <option value="">Seleccione una opción</option>
-        <option value="VIS">Vivienda de Interés Social (VIS)</option>
-        <option value="No VIS">No VIS</option>
-        <option value="VIP">Vivienda de Interés Prioritario (VIP)</option>
-    </select>
-</div>
+        <div class="mb-4">
+            <label class="form-label fw-bold">Tipo de Vivienda</label>
+            <select name="tipo_pro" class="form-select" required>
+                <option value="">Seleccione una opción</option>
+                <option value="VIS">Vivienda de Interés Social (VIS)</option>
+                <option value="No VIS">No VIS</option>
+                <option value="VIP">Vivienda de Interés Prioritario (VIP)</option>
+            </select>
+        </div>
 
-        <!-- Enviar -->
-      <!-- Estado del proyecto (automáticamente terminado) -->
-<input type="hidden" name="terminado" value="1">
+        <!-- Estado del proyecto (automáticamente terminado) -->
+        <input type="hidden" name="terminado" value="1">
 
-<div class="text-center mt-4">
-    <button type="submit" class="btn btn-primary btn-lg">Guardar Proyecto</button>
-</div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Guardar Proyecto</button>
+        </div>
     </form>
 </div>
 @endsection

@@ -11,9 +11,11 @@ class Authenticate
     public function handle(Request $request, Closure $next, ...$guards)
     {
         if (!Auth::check()) {
-            return redirect()->route('login'); // Asegúrate de tener esta ruta
+            // Redirigir al index principal con mensaje de advertencia
+            return redirect()->route('home')->with('warning', 'Debes iniciar sesión para acceder a esta sección.');
         }
 
         return $next($request);
     }
 }
+

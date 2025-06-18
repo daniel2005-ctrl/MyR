@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
@@ -13,15 +13,6 @@
     <!-- html2canvas y jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- jsPDF y jsPDF AutoTable -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.0/jspdf.plugin.autotable.js"></script>
-
-    
-    
-
-
 
         {{-- Estilos adicionales --}}
         @stack('styles')
@@ -43,10 +34,10 @@
 
         {{-- Scripts adicionales --}}
         @stack('scripts')
+        <script src="{{ asset('js/codigo_seguridad.js') }}"></script>
         <script src="{{ asset('js/inicio.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
-
     </body>
     </html>
+
