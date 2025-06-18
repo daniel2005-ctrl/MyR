@@ -1,15 +1,18 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "api/index.php",
-        "use": "vercel-php@0.7.0"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.php",
+      "use": "vercel-php@0.8.0",
+      "config": {
+        "phpVersion": "8.2"
       }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/api/index.php"
-      }
-    ]
-  }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ]
+}
