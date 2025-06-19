@@ -55,11 +55,12 @@
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
                                                         <form action="{{ route('subsidios_creditos.destroy', $item->id) }}" 
-                                                              method="POST" class="d-inline" 
-                                                              onsubmit="return confirm('¿Estás seguro de eliminar este elemento?')">
+                                                              method="POST" class="d-inline delete-form" 
+                                                              data-nombre="{{ $item->nombre }}" 
+                                                              data-tipo="subsidio">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
@@ -115,11 +116,12 @@
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
                                                         <form action="{{ route('subsidios_creditos.destroy', $item->id) }}" 
-                                                              method="POST" class="d-inline" 
-                                                              onsubmit="return confirm('¿Estás seguro de eliminar este elemento?')">
+                                                              method="POST" class="d-inline delete-form" 
+                                                              data-nombre="{{ $item->nombre }}" 
+                                                              data-tipo="crédito">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
@@ -145,4 +147,65 @@
         </div>
     </div>
 </div>
+
+{{-- Alertas de éxito --}}
+@if(session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: '{{ session("success") }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    });
+</script>
+@endif
+
+{{-- Script para confirmación de eliminación --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejar eliminación con SweetAlert2
+        document.querySelectorAll('.delete-btn').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const form = this.closest('.delete-form');
+                const nombre = form.getAttribute('data-nombre');
+                const tipo = form.getAttribute('data-tipo');
+                
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: `¿Deseas eliminar el ${tipo} "${nombre}"? Esta acción no se puede deshacer.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Mostrar loading
+                        Swal.fire({
+                            title: 'Eliminando...',
+                            text: 'Por favor espera',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Enviar formulario
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection
