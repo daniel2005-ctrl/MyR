@@ -200,9 +200,18 @@
         window.salarioMinimo = {{ $salarioMinimo }};
     </script>
 
-    <a href="{{ route('home') }}" class="btn-home">
-        🏠 Inicio
+   {{-- Botones flotantes --}}
+<div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
+    <a href="{{ url('/') }}" class="btn shadow-sm d-flex align-items-center mb-2"
+       style="border-radius: 10px; color: white; font-weight: bold; background-color: #ff6a00;">
+        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112199/proyectos/otros/home.png"
+             alt="Inicio" style="height: 20px; margin-right: 8px;">
+        Inicio
     </a>
+</div>
+
+
+
 
     <a href="javascript:void(0);" id="btnImprimirPDF" class="btn-imprimir-pdf">
         🖨 Imprimir PDF

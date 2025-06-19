@@ -12,6 +12,7 @@ return new class extends Migration
    public function up()
 {
     Schema::table('proyectos', function (Blueprint $table) {
+        $table->unsignedBigInteger('id_estado');
         $table->foreign('id_estado')->references('id_estado')->on('estados');
     });
 }
@@ -20,6 +21,7 @@ public function down()
 {
     Schema::table('proyectos', function (Blueprint $table) {
         $table->dropForeign(['id_estado']);
+        $table->dropColumn('id_estado');
     });
 }
 };

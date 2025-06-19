@@ -74,14 +74,11 @@
     </div>
 
     {{-- Botones flotantes --}}
-    <div class="d-flex justify-content-between align-items-center my-3 px-4">
-        <div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
-            <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
-                <img src="{{ asset('imagenes/otros/home.png') }}" alt="Inicio" style="height: 20px; margin-right: 8px;">
-                Inicio
-            </a>
-        </div>
+    <div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
+        <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
+            <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112199/proyectos/otros/home.png" alt="Inicio" style="height: 20px; margin-right: 8px;">
+            Inicio
+        </a>
     </div>
-</div>
 
 @endsection

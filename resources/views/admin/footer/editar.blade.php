@@ -56,7 +56,10 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="gmail_icon" class="form-label">Icono Gmail (clase Bootstrap Icons)</label>
-                        <input type="text" name="gmail_icon" id="gmail_icon" class="form-control" placeholder="Ejemplo: bi-envelope" value="{{ old('gmail_icon', $footer->gmail_icon) }}">
+                        <div class="input-group">
+                            <span class="input-group-text">bi bi-</span>
+                            <input type="text" name="gmail_icon" id="gmail_icon" class="form-control" placeholder="envelope" value="{{ old('gmail_icon', str_replace('bi bi-', '', $footer->gmail_icon)) }}">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,7 +83,10 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="whatsapp_icon" class="form-label">Icono WhatsApp (clase Bootstrap Icons)</label>
-                        <input type="text" name="whatsapp_icon" id="whatsapp_icon" class="form-control" placeholder="Ejemplo: bi-whatsapp" value="{{ old('whatsapp_icon', $footer->whatsapp_icon) }}">
+                        <div class="input-group">
+                            <span class="input-group-text">bi bi-</span>
+                            <input type="text" name="whatsapp_icon" id="whatsapp_icon" class="form-control" placeholder="whatsapp" value="{{ old('whatsapp_icon', str_replace('bi bi-', '', $footer->whatsapp_icon)) }}">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,14 +110,55 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="facebook_icon" class="form-label">Icono Facebook (clase Bootstrap Icons)</label>
-                        <input type="text" name="facebook_icon" id="facebook_icon" class="form-control" placeholder="Ejemplo: bi-facebook" value="{{ old('facebook_icon', $footer->facebook_icon) }}">
+                        <div class="input-group">
+                            <span class="input-group-text">bi bi-</span>
+                            <input type="text" name="facebook_icon" id="facebook_icon" class="form-control" placeholder="facebook" value="{{ old('facebook_icon', str_replace('bi bi-', '', $footer->facebook_icon)) }}">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- Contenedor para redes sociales adicionales --}}
-        <div id="additional-socials"></div>
+        <div id="additional-socials">
+            @if($footer->additional_socials && is_array($footer->additional_socials))
+                @foreach($footer->additional_socials as $index => $social)
+                    <div class="card mb-3" id="social-existing-{{ $index }}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <i class="bi bi-globe me-2"></i>
+                                <input type="text" name="social_names[]" placeholder="Nombre de la red social" class="form-control" style="max-width: 250px;" value="{{ old('social_names.' . $index, $social['name']) }}" required>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSocialNetworkExisting('existing-{{ $index }}')">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">URL de la Red Social</label>
+                                    <input type="url" name="social_urls[]" class="form-control" placeholder="https://ejemplo.com" value="{{ old('social_urls.' . $index, $social['url']) }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Icono (clase Bootstrap Icons)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">bi bi-</span>
+                                        <input type="text" name="social_icons[]" class="form-control" placeholder="instagram, twitter, linkedin" value="{{ old('social_icons.' . $index, str_replace('bi bi-', '', $social['icon'])) }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <small class="text-muted">
+                                        <strong>Ejemplos de iconos:</strong> instagram, twitter, linkedin, youtube, tiktok, telegram, discord, github
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
 
         {{-- Botón para agregar más redes sociales --}}
         <div class="mb-4">
@@ -133,7 +180,8 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
 
 <script>
-let socialCounter = 0;
+// Inicializar el contador considerando las redes sociales existentes
+let socialCounter = {{ $footer->additional_socials ? count($footer->additional_socials) : 0 }};
 
 // Función para mostrar toast notifications
 function showToast(message, type = 'success', duration = 4000) {
@@ -281,10 +329,10 @@ function addSocialNetwork() {
     
     socialCard.innerHTML = `
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">
-                <i class="bi bi-globe"></i> 
-                <input type="text" name="social_names[]" placeholder="Nombre de la red social" class="form-control d-inline-block" style="width: auto; display: inline-block !important; margin-left: 10px;" required>
-            </h6>
+            <div class="d-flex align-items-center flex-grow-1">
+                <i class="bi bi-globe me-2"></i>
+                <input type="text" name="social_names[]" placeholder="Nombre de la red social" class="form-control" style="max-width: 250px;" required>
+            </div>
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSocialNetwork(${socialCounter})">
                 <i class="bi bi-trash"></i> Eliminar
             </button>
@@ -297,7 +345,10 @@ function addSocialNetwork() {
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Icono (clase Bootstrap Icons)</label>
-                    <input type="text" name="social_icons[]" class="form-control" placeholder="Ejemplo: bi-instagram, bi-twitter, bi-linkedin" required>
+                    <div class="input-group">
+                        <span class="input-group-text">bi bi-</span>
+                        <input type="text" name="social_icons[]" class="form-control" placeholder="instagram, twitter, linkedin" required>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -315,6 +366,20 @@ function addSocialNetwork() {
 }
 
 function removeSocialNetwork(id) {
+    showConfirmModal(
+        'Eliminar red social',
+        '¿Estás seguro de que quieres eliminar esta red social? Esta acción no se puede deshacer.',
+        function() {
+            const element = document.getElementById(`social-${id}`);
+            if (element) {
+                element.remove();
+                showToast('Red social eliminada correctamente', 'success');
+            }
+        }
+    );
+}
+
+function removeSocialNetworkExisting(id) {
     showConfirmModal(
         'Eliminar red social',
         '¿Estás seguro de que quieres eliminar esta red social? Esta acción no se puede deshacer.',
@@ -367,17 +432,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style>
 .card-header input.form-control {
-    width: 200px !important;
-    display: inline-block !important;
-    margin-left: 10px;
     font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.375rem 0.75rem;
 }
 
-.card-header h6 {
-    display: flex;
+.card-header .d-flex {
     align-items: center;
-    margin: 0;
 }
 
 #additional-socials .card {

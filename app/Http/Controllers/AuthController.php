@@ -14,31 +14,40 @@ class AuthController extends Controller
     // LOGIN via AJAX
     // En App/Http/Controllers/AuthController.php
 
-public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
-
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-
-        $user = Auth::user();
-        $redirect = ($user->tipo_permiso_id == 1) ? '/admin' : '/';
-
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        
+        // Verificar si el usuario existe en la base de datos
+        $usuario = Usuario::where('email', $credentials['email'])->first();
+        
+        if (!$usuario) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El usuario no está registrado. Por favor, regístrate primero.',
+                'type' => 'not_registered'
+            ], 404);
+        }
+    
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+    
+            $user = Auth::user();
+            $redirect = ($user->tipo_permiso_id == 1) ? '/admin' : '/';
+    
+            return response()->json([
+                'success' => true,
+                'usuario' => $user->nombre,
+                'redirect' => $redirect
+            ]);
+        }
+    
         return response()->json([
-            'success' => true,
-            'usuario' => $user->nombre, // o username
-            'redirect' => $redirect
-        ]);
+            'success' => false,
+            'message' => 'Contraseña incorrecta',
+            'type' => 'wrong_password'
+        ], 401);
     }
-
-    return redirect()->intended('/')->with('status', 'Has iniciado sesión correctamente.');
-
-
-    return response()->json([
-        'success' => false,
-        'message' => 'Credenciales incorrectas'
-    ], 401);
-}
 
 
 

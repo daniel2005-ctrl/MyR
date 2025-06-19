@@ -6,21 +6,21 @@
             {{-- Gmail --}}
             @if($footer && $footer->gmail_url && $footer->gmail_icon)
                 <a href="{{ $footer->gmail_url }}" target="_blank" class="text-decoration-none">
-                    <i class="{{ $footer->gmail_icon }}" style="font-size: 1.5rem; color: #ea4335;"></i>
+                    <i class="{{ $footer->gmail_icon }}" style="font-size: 1.5rem; color:rgb(0, 0, 0);"></i>
                 </a>
             @endif
 
             {{-- WhatsApp --}}
             @if($footer && $footer->whatsapp_url && $footer->whatsapp_icon)
                 <a href="{{ $footer->whatsapp_url }}" target="_blank" class="text-decoration-none">
-                    <i class="{{ $footer->whatsapp_icon }}" style="font-size: 1.5rem; color: #25d366;"></i>
+                    <i class="{{ $footer->whatsapp_icon }}" style="font-size: 1.5rem; color:rgb(0, 0, 0);"></i>
                 </a>
             @endif
 
             {{-- Facebook --}}
             @if($footer && $footer->facebook_url && $footer->facebook_icon)
                 <a href="{{ $footer->facebook_url }}" target="_blank" class="text-decoration-none">
-                    <i class="{{ $footer->facebook_icon }}" style="font-size: 1.5rem; color: #1877f2;"></i>
+                    <i class="{{ $footer->facebook_icon }}" style="font-size: 1.5rem; color:rgb(0, 0, 0);"></i>
                 </a>
             @endif
 
@@ -35,10 +35,10 @@
                 
                 @foreach($additionalSocials as $social)
                     @if(isset($social['url']) && isset($social['icon']) && isset($social['name']))
-                        <a href="{{ $social['url'] }}" target="_blank" class="text-white me-3">
-                            <i class="{{ $social['icon'] }}" title="{{ $social['name'] }}"></i>
-                        </a>
-                    @endif
+            <a href="{{ $social['url'] }}" target="_blank" class="text-black me-3">
+                <i class="{{ $social['icon'] }}" title="{{ $social['name'] }}" style="font-size: 1.5rem; color:rgb(0, 0, 0);"></i>
+            </a>
+        @endif
                 @endforeach
             @endif
         </div>

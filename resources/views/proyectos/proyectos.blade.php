@@ -47,7 +47,7 @@
         <div class="col-md-4">
             <div class="border rounded-3 p-3 mb-3">
                 <div class="d-flex align-items-center mb-2">
-                    <img src="{{ asset('imagenes/otros/home.png') }}" alt="precio" width="30" class="me-2">
+                    <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112199/proyectos/otros/home.png" alt="precio" width="30" class="me-2">
                     <div>
                         @php
                             $precio = is_array($proyecto->precio) ? $proyecto->precio : json_decode($proyecto->precio, true);
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('imagenes/otros/metros.png') }}" alt="área" width="30" class="me-2">
+                    <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112200/proyectos/otros/metros.png" alt="área" width="30" class="me-2">
                     <div>
                         @php
                             $area = is_array($proyecto->area) ? $proyecto->area : json_decode($proyecto->area, true);
@@ -136,20 +136,18 @@
 @endif
 
 {{-- Botones flotantes --}}
-<div class="d-flex justify-content-between align-items-center my-3 px-4">
-    <div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
-        <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
-            <img src="{{ asset('imagenes/otros/home.png') }}" alt="Inicio" style="height: 20px; margin-right: 8px;">
-            Inicio
-        </a>
-    </div>
+<div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
+    <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
+        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112199/proyectos/otros/home.png" alt="Inicio" style="height: 20px; margin-right: 8px;">
+        Inicio
+    </a>
+</div>
 
-    <div style="position: fixed; top: 20%; right: 10px; transform: translateY(-50%); z-index: 999;">
-        <a href="{{ url('cotizacion') }}" class="btn btn-light shadow-sm d-flex align-items-center" style="border-radius: 10px; color: orange; font-weight: bold;">
-            <img src="{{ asset('imagenes/otros/cotiza.jpg') }}" alt="Cotiza Ya" style="height: 20px; margin-right: 8px;">
-            <span>Cotiza Ya</span>
-        </a>
-    </div>
+<div style="position: fixed; top: 20%; right: 10px; transform: translateY(-50%); z-index: 999;">
+    <a href="{{ url('cotizacion') }}" class="btn btn-light shadow-sm d-flex align-items-center" style="border-radius: 10px; color: orange; font-weight: bold;">
+        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112196/proyectos/otros/cotiza.jpg" alt="Cotiza Ya" style="height: 20px; margin-right: 8px;">
+        <span>Cotiza Ya</span>
+    </a>
 </div>
 
 @endsection

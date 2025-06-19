@@ -59,17 +59,13 @@ class FooterController extends Controller
 
         // Procesar redes sociales adicionales
         $additionalSocials = [];
-        if ($request->has('social_names') && $request->has('social_urls') && $request->has('social_icons')) {
-            $names = $request->social_names;
-            $urls = $request->social_urls;
-            $icons = $request->social_icons;
-            
-            for ($i = 0; $i < count($names); $i++) {
-                if (!empty($names[$i]) && !empty($urls[$i]) && !empty($icons[$i])) {
+        if ($request->has('social_names') && is_array($request->social_names)) {
+            foreach ($request->social_names as $index => $name) {
+                if (!empty($name) && !empty($request->social_urls[$index]) && !empty($request->social_icons[$index])) {
                     $additionalSocials[] = [
-                        'name' => $names[$i],
-                        'url' => $urls[$i],
-                        'icon' => $icons[$i]
+                        'name' => $name,
+                        'url' => $request->social_urls[$index],
+                        'icon' => 'bi bi-' . $request->social_icons[$index],
                     ];
                 }
             }
@@ -80,9 +76,9 @@ class FooterController extends Controller
             'gmail_url' => $request->gmail_url,
             'whatsapp_url' => $request->whatsapp_url,
             'facebook_url' => $request->facebook_url,
-            'gmail_icon' => $request->gmail_icon,
-            'whatsapp_icon' => $request->whatsapp_icon,
-            'facebook_icon' => $request->facebook_icon,
+            'gmail_icon' => $request->gmail_icon ? 'bi bi-' . $request->gmail_icon : null,
+            'whatsapp_icon' => $request->whatsapp_icon ? 'bi bi-' . $request->whatsapp_icon : null,
+            'facebook_icon' => $request->facebook_icon ? 'bi bi-' . $request->facebook_icon : null,
             'additional_socials' => $additionalSocials, // Remove json_encode(), let Laravel handle it
         ]);
 

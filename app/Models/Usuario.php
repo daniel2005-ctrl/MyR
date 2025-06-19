@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Usuario extends Authenticatable
 {
-    use Notifiable, HasFactory; // ← bien escrito aquí
+    use Notifiable, HasFactory;
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
+    public $incrementing = true;     // Asegurar que el ID es auto-incremental
+    protected $keyType = 'int';      // Tipo de clave primaria
 
     protected $fillable = [
         'nombre',
@@ -27,6 +28,11 @@ class Usuario extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     public $timestamps = true;
 
     public function tipoPermiso()
@@ -36,7 +42,6 @@ class Usuario extends Authenticatable
 
     public function isAdmin()
     {   
-    return $this->tipo_permiso_id === 1; // 1 es admin
+        return $this->tipo_permiso_id === 1; // 1 es admin
     }
-
 }

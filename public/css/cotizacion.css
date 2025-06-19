@@ -6,7 +6,7 @@ body {
   min-height: 100vh;
   background:
     linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("/imagenes/cotizaciones.png") no-repeat center center / cover;
+    url("https://res.cloudinary.com/dtwtippni/image/upload/v1750113028/cotizaciones_r1ityx.png") no-repeat center center / cover;
   background-attachment: fixed;
 }
 

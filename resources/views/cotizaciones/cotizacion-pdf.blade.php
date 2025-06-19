@@ -126,15 +126,15 @@
                         <h2>MYR Proyectos y Construcciones S.A.S</h2>
                     </td>
                     <td class="logo-cell">
-                        @if(file_exists(public_path('imagenes/Logos.png')))
-                            <img src="{{ public_path('imagenes/Logos.png') }}" alt="Logo MYR" class="logo">
-                        @else
-                            <span style="color: red;">Logo no encontrado</span>
-                        @endif
+                        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112030/proyectos/Logo.png" alt="Logo MYR" class="logo">
                     </td>
                 </tr>
             </table>
         </div>
+        
+        <!-- ... existing content ... -->
+        
+    </div>
         
         <div class="section">
             <div class="section-title">Vivienda</div>

@@ -4,6 +4,11 @@ let timerInterval;
 let codeExpiresAt = null;
 
 // Función para obtener el código actual del servidor
+/**
+ * Obtiene el código de seguridad actual del servidor
+ * @returns {Promise<boolean>} True si se obtuvo exitosamente, false en caso contrario
+ * @throws {Error} Si hay problemas de conectividad
+ */
 async function fetchCurrentCode() {
     try {
         const response = await fetch('/api/security-code/current', {
@@ -19,13 +24,15 @@ async function fetchCurrentCode() {
             if (data.success) {
                 currentSecurityCode = data.code;
                 codeExpiresAt = new Date(data.expires_at);
-                // REMOVIDO: console.log('Código obtenido del servidor:', currentSecurityCode);
-                // REMOVIDO: console.log('Expira en:', codeExpiresAt);
                 return true;
+            } else {
+                console.error('Error del servidor:', data.message || 'Error desconocido');
             }
+        } else {
+            console.error('Error HTTP:', response.status, response.statusText);
         }
     } catch (error) {
-        console.error('Error obteniendo código del servidor');
+        console.error('Error de conexión obteniendo código del servidor:', error.message);
     }
     return false;
 }
@@ -47,13 +54,15 @@ async function generateNewCode() {
             if (data.success) {
                 currentSecurityCode = data.code;
                 codeExpiresAt = new Date(data.expires_at);
-                // REMOVIDO: console.log('Nuevo código generado:', currentSecurityCode);
-                // REMOVIDO: console.log('Expira en:', codeExpiresAt);
                 return true;
+            } else {
+                console.error('Error del servidor generando código:', data.message || 'Error desconocido');
             }
+        } else {
+            console.error('Error HTTP generando código:', response.status, response.statusText);
         }
     } catch (error) {
-        console.error('Error generando código');
+        console.error('Error de conexión generando código:', error.message);
     }
     return false;
 }
@@ -74,8 +83,20 @@ function getRemainingTime() {
 
 // Función para inicializar el código
 async function initializeCode() {
-    // REMOVIDO: console.log('Inicializando código de seguridad...');
-    await fetchCurrentCode();
+    const success = await fetchCurrentCode();
+    
+    if (!success) {
+        console.warn('No se pudo obtener código del servidor, intentando generar uno nuevo...');
+        const generated = await generateNewCode();
+        
+        if (!generated) {
+            console.error('No se pudo inicializar el código de seguridad. Verifique la conexión al servidor.');
+            // Código de fallback temporal (solo para desarrollo)
+            currentSecurityCode = '------';
+            codeExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos desde ahora
+        }
+    }
+    
     return currentSecurityCode;
 }
 
@@ -188,3 +209,127 @@ document.addEventListener('DOMContentLoaded', async function() {
 window.validateSecurityCode = validateSecurityCode;
 window.forceNewCode = forceNewCode;
 // REMOVIDO: window.getCodeInfo = getCodeInfo; (función eliminada)
+
+// Agregar después de las variables globales
+let lastRequestTime = 0;
+const REQUEST_COOLDOWN = 1000; // 1 segundo entre requests
+
+// Función helper para rate limiting
+function canMakeRequest() {
+    const now = Date.now();
+    if (now - lastRequestTime < REQUEST_COOLDOWN) {
+        return false;
+    }
+    lastRequestTime = now;
+    return true;
+}
+
+// Función helper para reintentos
+async function retryWithBackoff(fn, maxRetries = 3) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const result = await fn();
+            if (result) return result;
+        } catch (error) {
+            console.warn(`Intento ${i + 1} falló:`, error.message);
+        }
+        
+        if (i < maxRetries - 1) {
+            const delay = Math.pow(2, i) * 1000; // 1s, 2s, 4s
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+    return false;
+}
+
+// Funciones de cache
+function saveCodeToCache(code, expiresAt) {
+    try {
+        localStorage.setItem('securityCode', JSON.stringify({
+            code,
+            expiresAt: expiresAt.toISOString(),
+            cachedAt: new Date().toISOString()
+        }));
+    } catch (error) {
+        console.warn('No se pudo guardar en cache:', error.message);
+    }
+}
+
+function loadCodeFromCache() {
+    try {
+        const cached = localStorage.getItem('securityCode');
+        if (cached) {
+            const data = JSON.parse(cached);
+            const expiresAt = new Date(data.expiresAt);
+            if (expiresAt > new Date()) {
+                return { code: data.code, expiresAt };
+            }
+        }
+    } catch (error) {
+        console.warn('Error cargando cache:', error.message);
+    }
+    return null;
+}
+
+// Función para sanitizar y validar códigos
+function sanitizeSecurityCode(code) {
+    if (typeof code !== 'string') return null;
+    
+    // Remover caracteres no numéricos
+    const cleaned = code.replace(/\D/g, '');
+    
+    // Validar longitud exacta
+    if (cleaned.length !== 6) return null;
+    
+    return cleaned;
+}
+
+// Sistema de métricas simple
+const metrics = {
+    requestCount: 0,
+    errorCount: 0,
+    lastError: null,
+    
+    incrementRequest() { this.requestCount++; },
+    incrementError(error) { 
+        this.errorCount++; 
+        this.lastError = { message: error.message, timestamp: new Date() };
+    },
+    
+    getStats() {
+        return {
+            requests: this.requestCount,
+            errors: this.errorCount,
+            errorRate: this.requestCount > 0 ? (this.errorCount / this.requestCount * 100).toFixed(2) + '%' : '0%',
+            lastError: this.lastError
+        };
+    }
+};
+
+
+// Función para mostrar estado de conexión
+function updateConnectionStatus(isOnline) {
+    const statusElement = document.getElementById('connection-status');
+    if (statusElement) {
+        statusElement.className = isOnline ? 'status-online' : 'status-offline';
+        statusElement.textContent = isOnline ? '🟢 Conectado' : '🔴 Sin conexión';
+    }
+}
+
+// Detectar cambios de conectividad
+window.addEventListener('online', () => updateConnectionStatus(true));
+window.addEventListener('offline', () => updateConnectionStatus(false));
+
+// Sistema de notificaciones simple
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}

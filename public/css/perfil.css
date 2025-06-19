@@ -13,7 +13,7 @@ html, body {
 body {
     font-family: 'Oswald', sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-url("/imagenes/myr72/Fondo72.png") no-repeat center center / cover;
+    url("https://res.cloudinary.com/dtwtippni/image/upload/v1750113028/cotizaciones_r1ityx.png") no-repeat center center / cover;
     min-height: 100vh;
 }
 

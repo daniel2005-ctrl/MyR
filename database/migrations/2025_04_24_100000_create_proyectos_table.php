@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreignId('id_tipo_permiso')->constrained('tipo_permisos');
             $table->unsignedBigInteger('visitas')->default(0);
             $table->timestamps();
-            $table->unsignedBigInteger('visitas')->default(0);
         });
     }
     

@@ -155,8 +155,7 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 proyecto-card {{ $proyecto->terminado == 0 ? 'proyecto-inactivo' : '' }}" 
                  data-terminado="{{ $proyecto->terminado }}">
                 <div class="card h-100 shadow-sm border-0 position-relative proyecto-item" 
-                     onclick="window.location.href='{{ route('proyectos.show', $proyecto->slug) }}}'" 
-                     style="cursor: pointer; transition: all 0.3s ease;">
+                     style="transition: all 0.3s ease;">
 
                     {{-- Estado (badge) --}}
                     @auth

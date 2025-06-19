@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SecurityCode;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class SecurityCodeController extends Controller
 {
@@ -14,19 +15,51 @@ class SecurityCodeController extends Controller
      */
     public function current(): JsonResponse
     {
-        $code = SecurityCode::getCurrent();
-        
-        if (!$code) {
-            // Si no hay código válido, generar uno nuevo
-            $code = SecurityCode::generateNew();
+        try {
+            $code = SecurityCode::getCurrent();
+            
+            if (!$code) {
+                // Si no hay código válido, generar uno nuevo
+                $code = SecurityCode::generateNew();
+            }
+            
+            return response()->json([
+                'success' => true,
+                'code' => $code->code,
+                'expires_at' => $code->expires_at->toISOString(),
+                'remaining_seconds' => $code->getRemainingSeconds()
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('Error de base de datos en SecurityCodeController::current: ' . $e->getMessage());
+            Log::error('Código de error SQL: ' . $e->getCode());
+            Log::error('Info de conexión: Host=' . config('database.connections.mysql.host') . ', DB=' . config('database.connections.mysql.database'));
+            
+            $errorMessage = 'Error de conexión a la base de datos Railway';
+            if (str_contains($e->getMessage(), 'Connection refused')) {
+                $errorMessage = 'No se puede conectar al servidor Railway. Verifique la conectividad.';
+            } elseif (str_contains($e->getMessage(), 'Access denied')) {
+                $errorMessage = 'Credenciales de Railway incorrectas. Verifique usuario y contraseña.';
+            } elseif (str_contains($e->getMessage(), "Table 'railway.security_codes' doesn't exist")) {
+                $errorMessage = 'La tabla security_codes no existe en Railway. Ejecute las migraciones.';
+            }
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Error de conexión a la base de datos',
+                'message' => $errorMessage,
+                'sql_error_code' => $e->getCode(),
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
+        } catch (\Exception $e) {
+            Log::error('Error en SecurityCodeController::current: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Error interno del servidor',
+                'message' => 'No se pudo obtener el código de seguridad',
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
         }
-        
-        return response()->json([
-            'success' => true,
-            'code' => $code->code,
-            'expires_at' => $code->expires_at->toISOString(),
-            'remaining_seconds' => $code->getRemainingSeconds()
-        ]);
     }
 
     /**
@@ -34,15 +67,47 @@ class SecurityCodeController extends Controller
      */
     public function generate(): JsonResponse
     {
-        $code = SecurityCode::generateNew();
-        
-        return response()->json([
-            'success' => true,
-            'code' => $code->code,
-            'expires_at' => $code->expires_at->toISOString(),
-            'remaining_seconds' => $code->getRemainingSeconds(),
-            'message' => 'Nuevo código generado exitosamente'
-        ]);
+        try {
+            $code = SecurityCode::generateNew();
+            
+            return response()->json([
+                'success' => true,
+                'code' => $code->code,
+                'expires_at' => $code->expires_at->toISOString(),
+                'remaining_seconds' => $code->getRemainingSeconds(),
+                'message' => 'Nuevo código generado exitosamente'
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('Error de base de datos en SecurityCodeController::generate: ' . $e->getMessage());
+            Log::error('Código de error SQL: ' . $e->getCode());
+            Log::error('Info de conexión: Host=' . config('database.connections.mysql.host') . ', DB=' . config('database.connections.mysql.database'));
+            
+            $errorMessage = 'Error de conexión a la base de datos Railway';
+            if (str_contains($e->getMessage(), 'Connection refused')) {
+                $errorMessage = 'No se puede conectar al servidor Railway. Verifique la conectividad.';
+            } elseif (str_contains($e->getMessage(), 'Access denied')) {
+                $errorMessage = 'Credenciales de Railway incorrectas. Verifique usuario y contraseña.';
+            } elseif (str_contains($e->getMessage(), "Table 'railway.security_codes' doesn't exist")) {
+                $errorMessage = 'La tabla security_codes no existe en Railway. Ejecute las migraciones.';
+            }
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Error de conexión a la base de datos',
+                'message' => $errorMessage,
+                'sql_error_code' => $e->getCode(),
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
+        } catch (\Exception $e) {
+            Log::error('Error en SecurityCodeController::generate: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Error interno del servidor',
+                'message' => 'No se pudo generar el código de seguridad',
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
+        }
     }
 
     /**
@@ -90,5 +155,40 @@ class SecurityCodeController extends Controller
                 'is_active' => $code->is_active
             ]
         ]);
+    }
+
+    /**
+     * Health check para el sistema de códigos de seguridad
+     */
+    public function health(): JsonResponse
+    {
+        try {
+            $activeCodesCount = SecurityCode::where('is_active', true)->count();
+            $lastCodeGenerated = SecurityCode::latest('created_at')->first();
+            
+            return response()->json([
+                'status' => 'healthy',
+                'active_codes' => $activeCodesCount,
+                'last_generated' => $lastCodeGenerated?->created_at,
+                'timestamp' => now()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'unhealthy',
+                'error' => 'Database connection failed',
+                'timestamp' => now()
+            ], 503);
+        }
+    }
+    // Agregar en el constructor del controlador
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $response = $next($request);
+            $response->headers->set('X-Content-Type-Options', 'nosniff');
+            $response->headers->set('X-Frame-Options', 'DENY');
+            $response->headers->set('X-XSS-Protection', '1; mode=block');
+            return $response;
+        });
     }
 }

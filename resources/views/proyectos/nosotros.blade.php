@@ -112,29 +112,20 @@
         @endphp
 
         <div class="d-flex justify-content-between align-items-center my-3 px-4">
-    <!-- Botón flotante izquierdo (Inicio) -->
-    <div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
-        <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
-            <img src="{{ 
-                (str_contains('imagenes/otros/home.png', 'cloudinary.com') || str_contains('imagenes/otros/home.png', 'res.cloudinary.com')) 
-                    ? 'imagenes/otros/home.png' 
-                    : asset('imagenes/otros/home.png') 
-            }}" alt="Inicio" style="height: 20px; margin-right: 8px;">
-            Inicio
-        </a>
-    </div>
+   {{-- Botones flotantes --}}
+<div style="position: fixed; top: 20%; left: 10px; transform: translateY(-50%); z-index: 999;">
+    <a href="{{ url('/') }}" class="btn btn-light shadow-sm d-flex align-items-center mb-2" style="border-radius: 10px; color: orange; font-weight: bold;">
+        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112199/proyectos/otros/home.png" alt="Inicio" style="height: 20px; margin-right: 8px;">
+        Inicio
+    </a>
+</div>
 
-     <!-- Botón flotante derecho (Cotiza Ya) -->
-    <div style="position: fixed; top: 20%; right: 10px; transform: translateY(-50%); z-index: 999;">
-        <a href="{{ url('cotizacion') }}" class="btn btn-light shadow-sm d-flex align-items-center" style="border-radius: 10px; color: orange; font-weight: bold;">
-            <img src="{{ 
-                (str_contains('imagenes/otros/cotiza.jpg', 'cloudinary.com') || str_contains('imagenes/otros/cotiza.jpg', 'res.cloudinary.com')) 
-                    ? 'imagenes/otros/cotiza.jpg' 
-                    : asset('imagenes/otros/cotiza.jpg') 
-            }}" alt="Cotiza Ya" style="height: 20px; margin-right: 8px;">
-            <span>Cotiza Ya</span>
-        </a>
-    </div>
+<div style="position: fixed; top: 20%; right: 10px; transform: translateY(-50%); z-index: 999;">
+    <a href="{{ url('cotizacion') }}" class="btn btn-light shadow-sm d-flex align-items-center" style="border-radius: 10px; color: orange; font-weight: bold;">
+        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112196/proyectos/otros/cotiza.jpg" alt="Cotiza Ya" style="height: 20px; margin-right: 8px;">
+        <span>Cotiza Ya</span>
+    </a>
+</div>
 
         @foreach ($valoresOrdenados as $valor)
             @php

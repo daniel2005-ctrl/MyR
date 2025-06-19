@@ -125,25 +125,42 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(res => res.json())
         .then(data => {
-         if (data.success) {
-        // Guardamos el usuario y un mensaje en localStorage
-        localStorage.setItem("usuario", data.usuario);
-        localStorage.setItem("loginSuccess", "¡Has iniciado sesión correctamente!");
+            if (data.success) {
+                // Guardamos el usuario y un mensaje en localStorage
+                localStorage.setItem("usuario", data.usuario);
+                localStorage.setItem("loginSuccess", "¡Has iniciado sesión correctamente!");
 
-        if (data.redirect) {
-            window.location.href = data.redirect;
-        } else {
-            cerrarModal();
-            mostrarMenuUsuario(data.usuario);
-        }
-
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    cerrarModal();
+                    mostrarMenuUsuario(data.usuario);
+                }
             } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error al iniciar sesión",
-                    text: data.message,
-                    confirmButtonColor: "#ff6600"
-                });
+                // Diferentes tipos de error
+                if (data.type === 'not_registered') {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Usuario no registrado",
+                        text: data.message,
+                        confirmButtonColor: "#ff6600",
+                        showCancelButton: true,
+                        cancelButtonText: "Cancelar",
+                        confirmButtonText: "Registrarse"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Cambiar al formulario de registro
+                            // Aquí puedes agregar la lógica para mostrar el formulario de registro
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error al iniciar sesión",
+                        text: data.message,
+                        confirmButtonColor: "#ff6600"
+                    });
+                }
             }
         })
         .catch(err => {
@@ -217,17 +234,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const { isConfirmed } = await Swal.fire({
         title: '¿Deseas crear tu cuenta?',
         html: `
-            <div style="text-align: left;">
-                <input type="checkbox" id="acepto" />
-                <label for="acepto">He leído y acepto los <a href="/terminos" target="_blank">Términos y Condiciones</a>.</label>
-            </div>
-        `,
+              <p>Debes aceptar los <a href="${rutaTerminos}" target="_blank">Términos y Condiciones</a> antes de continuar.</p>
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="aceptoTerminos">
+                    <label class="form-check-label" for="aceptoTerminos">Acepto los términos y condiciones</label>
+                </div>
+            `,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sí, registrar',
         cancelButtonText: 'Cancelar',
         preConfirm: () => {
-            const acepto = document.getElementById('acepto').checked;
+            const acepto = document.getElementById('aceptoTerminos').checked;
             if (!acepto) {
                 Swal.showValidationMessage('Debes aceptar los Términos y Condiciones para continuar.');
             }
