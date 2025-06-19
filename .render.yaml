@@ -13,7 +13,7 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        value: https://myr-laravel.onrender.com
+        value: https://myr-hkfx.onrender.com
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
