@@ -18,7 +18,7 @@ COPY . .
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Permisos para almacenamiento y cache
+# Asignar permisos
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage \
     && chmod -R 755 /var/www/bootstrap/cache
@@ -26,5 +26,5 @@ RUN chown -R www-data:www-data /var/www \
 # Exponer puerto
 EXPOSE 8000
 
-# Comando de arranque
-CMD php artisan config:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+# Comando de arranque (sin migrate)
+CMD php artisan config:cache && php artisan serve --host=0.0.0.0 --port=8000
