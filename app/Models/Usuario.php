@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPasswordNotification;
 
 class Usuario extends Authenticatable
 {
@@ -43,5 +44,13 @@ class Usuario extends Authenticatable
     public function isAdmin()
     {   
         return $this->tipo_permiso_id === 1; // 1 es admin
+    }
+
+    /**
+     * Enviar notificación de restablecimiento de contraseña personalizada
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

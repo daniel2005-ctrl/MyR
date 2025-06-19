@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
     resetForm.addEventListener("submit", function (e) {
         e.preventDefault();
         const formData = new FormData(resetForm);
-
+    
         fetch("/password/email", {
             method: "POST",
             headers: {
@@ -313,15 +313,20 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.success) {
                 Swal.fire({
                     icon: "success",
-                    title: "¡Recuperación de contraseña!",
-                    text: "Hemos enviado un enlace de recuperación a tu correo.",
-                    confirmButtonText: "Aceptar"
+                    title: "¡Correo enviado exitosamente!",
+                    text: "Hemos enviado un enlace de recuperación a tu correo electrónico. Por favor revisa tu bandeja de entrada.",
+                    confirmButtonText: "Entendido",
+                    confirmButtonColor: "#ff6600"
+                }).then(() => {
+                    // Limpiar el formulario y volver al login
+                    resetForm.reset();
+                    showSection(loginFormContainer);
                 });
             } else {
                 Swal.fire({
                     icon: "error",
-                    title: "Error",
-                    text: data.message,
+                    title: "Error al enviar correo",
+                    text: data.message || "No se pudo enviar el correo de recuperación. Intenta nuevamente.",
                     confirmButtonColor: "#ff6600"
                 });
             }
@@ -330,8 +335,8 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error en recuperación:", err);
             Swal.fire({
                 icon: "error",
-                title: "Error inesperado",
-                text: "No se pudo conectar con el servidor.",
+                title: "Error de conexión",
+                text: "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
                 confirmButtonColor: "#ff6600"
             });
         });

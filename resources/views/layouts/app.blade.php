@@ -16,6 +16,7 @@
 
     {{-- Estilos adicionales --}}
     @stack('styles')
+    @yield('styles')
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -34,7 +35,8 @@
 
     {{-- Scripts adicionales --}}
     @stack('scripts')
-    
+    @yield('scripts')
+
     <!-- Definir variables globales para JavaScript -->
     <script>
         const rutaTerminos = @json(route('terminos')); // Define la ruta de términos y condiciones

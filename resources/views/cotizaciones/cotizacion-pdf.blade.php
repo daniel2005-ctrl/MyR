@@ -118,22 +118,18 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <table class="header-table">
-                <tr>
-                    <td class="title-cell">
-                        <h2>MYR Proyectos y Construcciones S.A.S</h2>
-                    </td>
-                    <td class="logo-cell">
-                        <img src="https://res.cloudinary.com/dtwtippni/image/upload/v1750112030/proyectos/Logo.png" alt="Logo MYR" class="logo">
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- ... existing content ... -->
-        
+   <div class="container">
+    <div class="header">
+        <table class="header-table">
+            <tr>
+                <td class="title-cell">
+                    <h2>MYR Proyectos y Construcciones S.A.S</h2>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+     
     </div>
         
         <div class="section">

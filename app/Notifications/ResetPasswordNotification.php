@@ -1,11 +1,17 @@
 <?php
+
 namespace App\Notifications;
 
-use Illuminate\Notifications\Notification;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use App\Models\Footer;
 
 class ResetPasswordNotification extends Notification
 {
+    use Queueable;
+
     public $token;
 
     public function __construct($token)
@@ -20,18 +26,27 @@ class ResetPasswordNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $url = url(route('password.reset', [
+        $resetUrl = url(route('password.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
         ], false));
 
+        // Obtener datos del footer para las redes sociales
+        $footer = Footer::first();
+
         return (new MailMessage)
-            ->subject('🔒 Restablece tu contraseña en MYR Proyectos')
-            ->greeting("¡Hola {$notifiable->nombre}!")
-            ->line('Recibimos una solicitud para cambiar tu contraseña.')
-            ->action('Restablecer contraseña', $url)
-            ->line('Si no fuiste tú, simplemente ignora este mensaje.')
-            ->salutation('Saludos,
-            El equipo de MYR Proyectos');
+            ->subject('🏠 Restablecer Contraseña - MYR Proyectos')
+            ->view('emails.reset-password', [
+                'notifiable' => $notifiable,
+                'resetUrl' => $resetUrl,
+                'footer' => $footer
+            ]);
+    }
+
+    public function toArray($notifiable)
+    {
+        return [
+            //
+        ];
     }
 }

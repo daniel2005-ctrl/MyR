@@ -8,9 +8,18 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
+use App\Services\PasswordResetService;
+use App\Notifications\ResetPasswordNotification;
 
 class AuthController extends Controller
 {
+    protected $passwordResetService;
+    
+    public function __construct(PasswordResetService $passwordResetService)
+    {
+        $this->passwordResetService = $passwordResetService;
+    }
+
     // LOGIN via AJAX
     // En App/Http/Controllers/AuthController.php
 
@@ -103,27 +112,43 @@ public function logout(Request $request)
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
-
-        $status = Password::sendResetLink($request->only('email'));
-
-        // Respuesta JSON para AJAX
-        if ($request->wantsJson()) {
-            return $status === Password::RESET_LINK_SENT
-                ? response()->json(['message' => __($status)], 200)
-                : response()->json(['message' => __($status)], 422);
+        
+        // Verificar si el usuario existe
+        $user = Usuario::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No encontramos un usuario con ese correo electrónico.'
+            ], 422);
         }
-
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withErrors(['email' => __($status)]);
+        
+        // Crear token personalizado
+        $token = $this->passwordResetService->createToken($request->email);
+        
+        // Enviar notificación
+        $user->notify(new ResetPasswordNotification($token));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Hemos enviado un enlace de recuperación a tu correo electrónico.'
+        ], 200);
     }
 
     // Mostrar formulario de restablecer contraseña
     public function showResetForm(Request $request, $token = null)
     {
+        $email = $request->email;
+        
+        // Verificar si el token es válido antes de mostrar el formulario
+        if (!$this->passwordResetService->validateToken($email, $token)) {
+            return redirect()->route('password.request')
+                ->withErrors(['email' => 'Este enlace de restablecimiento es inválido o ya ha sido utilizado.']);
+        }
+        
         return view('auth.passwords.reset', [
             'token' => $token,
-            'email' => $request->email,
+            'email' => $email,
         ]);
     }
 
@@ -136,26 +161,37 @@ public function logout(Request $request)
             'email'    => 'required|email',
             'password' => 'required|confirmed|min:6',
         ]);
-
-        // Realizar el restablecimiento
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->password = Hash::make($request->password); // Encriptar nueva contraseña
-                $user->save();
-                event(new PasswordReset($user)); // Disparar el evento de PasswordReset
-            }
-        );
-
-        // Respuesta en JSON para AJAX
-        if ($request->wantsJson()) {
-            return $status === Password::PASSWORD_RESET
-                ? response()->json(['message' => 'Contraseña cambiada con éxito.'], 200)
-                : response()->json(['message' => __($status)], 422);
+        
+        // Verificar token personalizado
+        if (!$this->passwordResetService->validateToken($request->email, $request->token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este enlace de restablecimiento es inválido o ya ha sido utilizado.'
+            ], 422);
         }
-
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('home')->with('status', 'Contraseña cambiada con éxito.')
-            : back()->withErrors(['email' => [__($status)]]);
+        
+        // Buscar usuario
+        $user = Usuario::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontró el usuario.'
+            ], 422);
+        }
+        
+        // Actualizar contraseña
+        $user->password = Hash::make($request->password);
+        $user->save();
+        
+        // Marcar token como usado y luego eliminarlo
+        $this->passwordResetService->markTokenAsUsed($request->email);
+        $this->passwordResetService->deleteToken($request->email);
+        
+        // Respuesta exitosa
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña cambiada con éxito.'
+        ], 200);
     }
 }
